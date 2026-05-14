@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, BarChart3, Database, FileSpreadsheet, LineChart, Sparkles } from "lucide-react";
-import heroImg from "@/assets/hero-data.jpg";
+import heroImg from "@/assets/teddy-portrait.jpg";
+import dataBg from "@/assets/data-bg.jpg";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -25,6 +26,12 @@ function Index() {
     <div>
       {/* Hero */}
       <section className="relative overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-25"
+          style={{ backgroundImage: `url(${dataBg})` }}
+          aria-hidden="true"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/80 to-background" aria-hidden="true" />
         <div className="absolute inset-0 grid-bg opacity-40 [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)]" />
         <div className="relative mx-auto max-w-7xl px-6 lg:px-10 pt-20 pb-24 grid gap-12 lg:grid-cols-12 items-center">
           <div className="lg:col-span-7 space-y-8">
@@ -54,15 +61,16 @@ function Index() {
             </div>
           </div>
           <div className="lg:col-span-5 relative">
-            <div className="absolute -inset-4 bg-gradient-to-br from-primary/30 to-accent/30 blur-3xl opacity-40" />
-            <div className="relative rounded-2xl overflow-hidden border border-border shadow-[var(--shadow-soft)]">
+            <div className="absolute -inset-4 bg-gradient-to-br from-primary/30 to-accent/30 blur-3xl opacity-50" />
+            <div className="relative rounded-2xl overflow-hidden border border-border shadow-[var(--shadow-soft)] aspect-[4/5] max-w-md mx-auto">
               <img
                 src={heroImg}
-                alt="Data analyst silhouette with charts"
-                width={1536}
-                height={1024}
-                className="w-full h-auto"
+                alt="Portrait of Teddy Mathabatha, data analyst"
+                width={900}
+                height={1125}
+                className="w-full h-full object-cover"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
             </div>
           </div>
         </div>

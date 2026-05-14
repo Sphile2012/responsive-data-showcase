@@ -13,19 +13,23 @@ export function SiteFooter() {
         <div className="text-sm space-y-2">
           <p className="text-muted-foreground uppercase tracking-widest text-xs mb-3">Contact</p>
           <a href="mailto:teddymathabatha3@gmail.com" className="flex items-center gap-2 hover:text-primary transition break-all">
-            <Mail className="size-4 shrink-0" /> teddymathabatha3@gmail.com
+            <Mail className="size-4 shrink-0" />
+            <span>teddymathabatha3@gmail.com</span>
           </a>
           <a href="tel:+27722351747" className="flex items-center gap-2 hover:text-primary transition">
-            <Phone className="size-4 shrink-0" /> 072 235 1747
+            <Phone className="size-4 shrink-0" />
+            <span>072 235 1747</span>
           </a>
         </div>
         <div className="text-sm space-y-2">
           <p className="text-muted-foreground uppercase tracking-widest text-xs mb-3">Elsewhere</p>
           <a href="https://github.com/TeddyDataHub" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-primary transition">
-            <Github className="size-4" /> github.com/TeddyDataHub
+            <Github className="size-4" />
+            <span>github.com/TeddyDataHub</span>
           </a>
           <a href="https://www.linkedin.com/in/teddy-mathabatha-3ba205223/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-primary transition">
-            <Linkedin className="size-4" /> LinkedIn
+            <Linkedin className="size-4" />
+            <span>LinkedIn</span>
           </a>
         </div>
       </div>

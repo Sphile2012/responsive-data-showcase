@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, BarChart3, Database, FileSpreadsheet, LineChart, Sparkles } from "lucide-react";
-import heroImg from "@/assets/teddy-portrait.jpg";
-import dataBg from "@/assets/data-bg.jpg";
+import hivBg from "@/assets/hiv-stats-bg.jpg";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -25,52 +24,41 @@ function Index() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden border-b border-border">
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-25"
-          style={{ backgroundImage: `url(${dataBg})` }}
+          className="absolute inset-0 bg-cover bg-center opacity-60"
+          style={{ backgroundImage: `url(${hivBg})` }}
           aria-hidden="true"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/80 to-background" aria-hidden="true" />
-        <div className="absolute inset-0 grid-bg opacity-40 [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)]" />
-        <div className="relative mx-auto max-w-7xl px-6 lg:px-10 pt-20 pb-24 grid gap-12 lg:grid-cols-12 items-center">
-          <div className="lg:col-span-7 space-y-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-surface/50 text-xs uppercase tracking-widest text-muted-foreground">
-              <Sparkles className="size-3 text-primary" /> Available for opportunities
+        <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/70 to-background" aria-hidden="true" />
+        <div className="relative mx-auto max-w-6xl px-6 lg:px-10 pt-24 pb-28">
+          <div className="max-w-3xl space-y-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-card/80 backdrop-blur text-xs uppercase tracking-widest text-muted-foreground">
+              <Sparkles className="size-3 text-primary" />
+              <span>Available for opportunities</span>
             </div>
-            <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl leading-[0.95]">
+            <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl leading-[0.95] text-foreground">
               Data, made <em className="text-gradient not-italic">decision-ready</em>.
             </h1>
-            <p className="text-lg text-muted-foreground max-w-xl leading-relaxed">
-              I'm Teddy Mathabatha — a data analyst from Johannesburg. I clean, query, and visualize
-              data so teams can act on it. Excel, Power BI, and SQL are my daily tools.
+            <p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
+              I'm Teddy Mathabatha — a data analyst from Johannesburg. I work with public-health
+              datasets, including HIV epidemiology, turning raw records into clear insights through
+              Excel, Power BI, and SQL.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link
                 to="/projects"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-md bg-primary text-primary-foreground font-medium hover:opacity-90 transition shadow-[var(--shadow-glow)]"
               >
-                See my work <ArrowRight className="size-4" />
+                <span>See my work</span>
+                <ArrowRight className="size-4" />
               </Link>
               <Link
                 to="/contact"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-md border border-border hover:bg-surface transition"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-md border border-border bg-card/60 backdrop-blur hover:bg-surface transition"
               >
-                Get in touch
+                <span>Get in touch</span>
               </Link>
-            </div>
-          </div>
-          <div className="lg:col-span-5 relative">
-            <div className="absolute -inset-4 bg-gradient-to-br from-primary/30 to-accent/30 blur-3xl opacity-50" />
-            <div className="relative rounded-2xl overflow-hidden border border-border shadow-[var(--shadow-soft)] aspect-[4/5] max-w-md mx-auto">
-              <img
-                src={heroImg}
-                alt="Portrait of Teddy Mathabatha, data analyst"
-                width={900}
-                height={1125}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
             </div>
           </div>
         </div>

@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Download, Menu, X } from "lucide-react";
 
 const links = [
   { to: "/", label: "Home" },
@@ -12,13 +12,15 @@ const links = [
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   return (
-    <header className="sticky top-0 z-50 backdrop-blur-xl bg-background/70 border-b border-border">
+    <header className="sticky top-0 z-50 backdrop-blur-xl bg-background/80 border-b border-border">
       <div className="mx-auto max-w-7xl px-6 lg:px-10 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 group">
           <span className="h-8 w-8 rounded-md bg-gradient-to-br from-primary to-accent grid place-items-center font-display font-bold text-primary-foreground text-sm">
             T
           </span>
-          <span className="font-display text-lg tracking-tight">Teddy<span className="text-primary">.</span></span>
+          <span className="font-display text-lg tracking-tight">
+            Teddy<span className="text-primary">.</span>
+          </span>
         </Link>
         <nav className="hidden md:flex items-center gap-1">
           {links.map((l) => (
@@ -33,8 +35,15 @@ export function SiteHeader() {
             </Link>
           ))}
           <a
+            href="/teddy-mathabatha-cv.pdf"
+            download
+            className="ml-2 inline-flex items-center gap-1.5 px-3 py-2 text-sm rounded-md border border-border hover:border-primary hover:text-primary transition"
+          >
+            <Download className="size-3.5" /> CV
+          </a>
+          <a
             href="mailto:teddymathabatha3@gmail.com"
-            className="ml-2 px-4 py-2 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:opacity-90 transition"
+            className="ml-1 px-4 py-2 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:opacity-90 transition"
           >
             Hire me
           </a>
@@ -61,8 +70,15 @@ export function SiteHeader() {
               </Link>
             ))}
             <a
+              href="/teddy-mathabatha-cv.pdf"
+              download
+              className="mt-2 px-3 py-3 rounded-md border border-border text-center inline-flex items-center justify-center gap-2"
+            >
+              <Download className="size-4" /> Download CV
+            </a>
+            <a
               href="mailto:teddymathabatha3@gmail.com"
-              className="mt-2 px-3 py-3 rounded-md bg-primary text-primary-foreground text-center font-medium"
+              className="px-3 py-3 rounded-md bg-primary text-primary-foreground text-center font-medium"
             >
               Hire me
             </a>

@@ -233,7 +233,7 @@ function Index() {
             <motion.p variants={fadeUp} className="text-base sm:text-lg text-muted-foreground max-w-xl leading-relaxed">
               I'm{" "}
               <span className="font-semibold" style={{ color: "#e2e8f0" }}>Teddy Mathabatha</span>
-              {" "}— a data analyst from Johannesburg blending SQL, Python, and BI tools to ship dashboards, models, and stories that change how teams act on their data.
+              {" "}— a results-driven Data Analyst and aspiring Data Scientist from Johannesburg. I combine statistics, SQL, Python, and modern BI tools to build intelligent dashboards, predictive models, and data-driven solutions that help organizations make smarter, faster decisions.
             </motion.p>
 
             {/* CTAs */}

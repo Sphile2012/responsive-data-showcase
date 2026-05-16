@@ -58,10 +58,14 @@ function AboutPage() {
               Self-Taught.<br />Data-Driven.
             </h1>
             <p className="text-lg leading-relaxed max-w-3xl" style={{ color: "#94a3b8", fontFamily: "'Inter', sans-serif" }}>
-              I'm a detail-oriented data analyst building a quantitative foundation in Applied Mathematics and Statistics at UNISA.
-              I collect, analyse, and summarise data into clear, actionable recommendations — communicating findings through tables,
-              dashboards, and presentations that speak to both technical and non-technical stakeholders. My long-term focus is data science:
-              pairing rigorous statistics with machine learning to solve real-world problems.
+              I'm a results-driven Data Analyst and aspiring Data Scientist from Johannesburg with a strong passion for transforming raw data into powerful business insights.
+              I specialize in combining statistics, SQL, Python, and modern Business Intelligence tools to build intelligent dashboards, predictive models, and data-driven solutions
+              that help organizations make smarter, faster decisions. With a sharp analytical mindset and a strong eye for storytelling, I turn complex datasets into clear,
+              actionable strategies that drive growth, efficiency, and innovation.
+              <br /><br />
+              I am passionate about solving real-world problems through data, continuously learning emerging technologies, and creating impactful solutions that empower teams
+              to act confidently on their information. My goal is to bring technical excellence, creativity, and measurable value to forward-thinking companies looking to
+              unlock the full power of their data.
             </p>
             <div className="mt-8">
               <a

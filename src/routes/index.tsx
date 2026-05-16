@@ -128,37 +128,40 @@ function Index() {
             </motion.div>
             <motion.h1
               variants={fadeUp}
-              className="font-hero text-6xl sm:text-7xl lg:text-8xl xl:text-9xl leading-[0.9] uppercase text-foreground"
+              className="font-hero text-6xl sm:text-7xl lg:text-8xl xl:text-[8.5rem] leading-[0.9] uppercase text-foreground"
             >
-              <span className="block text-shimmer text-glow">Turning Raw Data</span>
-              <span className="block text-gradient text-glow">Into Decisions</span>
+              <span className="block text-shimmer text-glow">Turning Data Into</span>
+              <span className="block text-gradient text-glow">Intelligent Solutions</span>
             </motion.h1>
             <motion.p variants={fadeUp} className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
               I'm <span className="text-foreground font-medium">Teddy Mathabatha</span> — a data analyst and aspiring data scientist
-              from Johannesburg. I work across public-health and retail datasets, applying statistics,
-              SQL, Python, and BI tools to ship dashboards and insights that actually change how teams act.
+              from Johannesburg. I blend statistics, SQL, Python, and BI tools to ship dashboards,
+              models, and stories that change how teams act on their data.
             </motion.p>
             <motion.div variants={fadeUp} className="flex flex-wrap gap-3">
               <Link
                 to="/projects"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-md bg-primary text-primary-foreground font-medium hover:opacity-90 transition shadow-[var(--shadow-glow)]"
+                className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-md bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] text-primary-foreground font-semibold hover:bg-[position:100%_0] transition-[background-position] duration-500 shadow-[var(--shadow-glow)] animate-pulse-glow"
               >
+                <Zap className="size-4" />
                 <span>Explore case studies</span>
-                <ArrowRight className="size-4" />
+                <ArrowRight className="size-4 group-hover:translate-x-1 transition-transform" />
               </Link>
               <a
                 href="/teddy-mathabatha-cv.pdf"
                 download
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-md border border-border bg-card/60 backdrop-blur hover:bg-surface transition"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-md border border-border bg-card/60 backdrop-blur hover:border-primary/60 hover:text-primary transition"
               >
                 <Download className="size-4" /> Download CV
               </a>
-              <Link
-                to="/contact"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-md hover:text-primary transition"
+              <a
+                href="https://github.com/"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-md border border-border bg-card/60 backdrop-blur hover:border-primary/60 hover:text-primary transition"
               >
-                Get in touch <ArrowRight className="size-4" />
-              </Link>
+                <Github className="size-4" /> GitHub
+              </a>
             </motion.div>
           </motion.div>
 

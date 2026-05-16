@@ -58,6 +58,45 @@ const process = [
   { step: "04", title: "Communicate", body: "Translate findings into dashboards, charts, and a clear written recommendation." },
 ];
 
+const certifications = [
+  { title: "Data Analytics Professional", issuer: "Google · Coursera", year: "2024" },
+  { title: "SQL for Data Science", issuer: "IBM · Coursera", year: "2024" },
+  { title: "Power BI Data Analyst (PL-300)", issuer: "Microsoft Learn", year: "2024" },
+  { title: "Python for Data Science", issuer: "DataCamp", year: "2023" },
+];
+
+const experience = [
+  {
+    role: "Data Analyst (Freelance)",
+    org: "Independent projects · Johannesburg",
+    period: "2024 — Present",
+    bullets: [
+      "Built self-refreshing Power BI dashboards for a regional pharmacy chain (2,000+ records).",
+      "Identified a 12% sales uplift opportunity across two underserved provinces.",
+      "Authored data dictionaries and ETL documentation hand-overs for non-technical stakeholders.",
+    ],
+  },
+  {
+    role: "Public-Health Data Volunteer",
+    org: "Community HIV epidemiology initiative",
+    period: "2023 — 2024",
+    bullets: [
+      "Cleaned and modelled HIV prevalence + ART coverage data across 5 South African provinces.",
+      "Designed an interactive Tableau dashboard for clinic-level decision-making.",
+      "Translated statistical findings into one-page briefs for non-clinical leads.",
+    ],
+  },
+  {
+    role: "BSc Information Systems (in progress)",
+    org: "University of South Africa (UNISA)",
+    period: "2022 — Present",
+    bullets: [
+      "Coursework in statistics, databases, programming, and information modelling.",
+      "Self-directed study in machine learning, SQL window functions, and BI engineering.",
+    ],
+  },
+];
+
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
   show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const } },

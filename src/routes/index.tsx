@@ -161,7 +161,7 @@ const experience = [
 ];
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 28 },
+  hidden: { opacity: 1, y: 20 },
   show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const } },
 };
 
@@ -263,7 +263,7 @@ function Index() {
                 <Download className="size-4" /> Download CV
               </a>
               <a
-                href="https://github.com/"
+                href="https://github.com/TeddyDataHub"
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl border text-sm font-medium transition-all hover:-translate-y-0.5"
@@ -278,9 +278,9 @@ function Index() {
 
           {/* Right: live dashboard card */}
           <motion.div
-            initial={{ opacity: 0, y: 40, scale: 0.96 }}
+            initial={{ opacity: 1, y: 20, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 1, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 1, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             className="lg:col-span-5 animate-float"
           >
             <div

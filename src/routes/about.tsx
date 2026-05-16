@@ -3,7 +3,7 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import {
   Award, Download, GraduationCap, Trophy, Sparkles,
-  Code2, BarChart3, Database, Brain,
+  Code2, BarChart3, Database, Brain, Clock, Layers, Star,
 } from "lucide-react";
 
 export const Route = createFileRoute("/about")({
@@ -16,7 +16,6 @@ export const Route = createFileRoute("/about")({
   component: AboutPage,
 });
 
-/* ── Data ── */
 const certs = [
   { year: "2026", title: "Data Analysis Essentials",          issuer: "Cisco Networking Academy", color: "#22d3ee" },
   { year: "2026", title: "Introduction to AI & Data Science", issuer: "Absa ReadytoWork",         color: "#a78bfa" },
@@ -67,36 +66,31 @@ const skillCategories = [
     label: "Analytical & Soft Skills",
     color: "#f472b6",
     skills: [
-      { name: "Statistics & Hypothesis Testing",    level: 80 },
-      { name: "Analytical & Critical Thinking",     level: 90 },
-      { name: "Stakeholder Communication",          level: 88 },
+      { name: "Statistics & Hypothesis Testing",       level: 80 },
+      { name: "Analytical & Critical Thinking",        level: 90 },
+      { name: "Stakeholder Communication",             level: 88 },
       { name: "Problem Solving & Root Cause Analysis", level: 85 },
     ],
   },
 ];
 
-/* ── Animated progress bar ── */
+const profileStats = [
+  { icon: Layers,         value: "4+",    label: "Projects Delivered",   color: "#22d3ee" },
+  { icon: Clock,          value: "200+",  label: "Hours Self-Study",      color: "#a78bfa" },
+  { icon: Star,           value: "12",    label: "Tools Mastered",        color: "#34d399" },
+  { icon: GraduationCap,  value: "BSc",   label: "UNISA · In Progress",   color: "#fbbf24" },
+];
+
 function SkillBar({ name, level, color }: { name: string; level: number; color: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
-
   return (
     <div ref={ref} className="space-y-1.5">
       <div className="flex justify-between items-center">
         <span className="text-sm" style={{ color: "#cbd5e1", fontFamily: "'Inter', sans-serif" }}>{name}</span>
-        <span
-          className="font-orbitron text-xs font-bold tabular-nums"
-          style={{ color }}
-        >
-          {inView ? `${level}%` : "0%"}
-        </span>
+        <span className="font-orbitron text-xs font-bold tabular-nums" style={{ color }}>{inView ? `${level}%` : "0%"}</span>
       </div>
-      {/* Track */}
-      <div
-        className="relative h-2 rounded-full overflow-hidden"
-        style={{ background: "rgba(255,255,255,0.05)" }}
-      >
-        {/* Glow shadow layer */}
+      <div className="relative h-2 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.05)" }}>
         <motion.div
           className="absolute inset-y-0 left-0 rounded-full blur-sm"
           initial={{ width: 0 }}
@@ -104,24 +98,19 @@ function SkillBar({ name, level, color }: { name: string; level: number; color: 
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
           style={{ background: color, opacity: 0.5 }}
         />
-        {/* Solid fill layer */}
         <motion.div
           className="absolute inset-y-0 left-0 rounded-full"
           initial={{ width: 0 }}
           animate={inView ? { width: `${level}%` } : { width: 0 }}
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-          style={{
-            background: `linear-gradient(90deg, ${color}bb, ${color})`,
-            boxShadow: `0 0 12px ${color}60`,
-          }}
+          style={{ background: `linear-gradient(90deg, ${color}bb, ${color})`, boxShadow: `0 0 12px ${color}60` }}
         />
-        {/* Scanning shimmer */}
         <motion.div
           className="absolute inset-y-0 w-8 rounded-full"
           initial={{ left: "-2rem", opacity: 0 }}
           animate={inView ? { left: `${level}%`, opacity: [0, 0.8, 0] } : {}}
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-          style={{ background: `linear-gradient(90deg, transparent, #fff, transparent)` }}
+          style={{ background: "linear-gradient(90deg, transparent, #fff, transparent)" }}
         />
       </div>
     </div>
@@ -131,52 +120,120 @@ function SkillBar({ name, level, color }: { name: string; level: number; color: 
 function AboutPage() {
   return (
     <div className="overflow-x-hidden">
-      {/* Hero banner */}
+      {/* ── Hero ── */}
       <div className="relative border-b overflow-hidden" style={{ borderColor: "rgba(34,211,238,0.1)" }}>
         <div className="absolute inset-0 grid-bg opacity-20" />
-        <div className="absolute top-0 right-1/3 w-72 h-72 rounded-full blur-[120px] opacity-12"
+        <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-[140px] opacity-10"
           style={{ background: "radial-gradient(circle, #a78bfa, transparent 70%)" }} />
-        <div className="mx-auto max-w-5xl px-6 lg:px-10 py-20 relative">
-          <motion.div initial={{ opacity: 1, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <p className="font-mono text-xs uppercase tracking-[0.25em] mb-4 flex items-center gap-2" style={{ color: "#a78bfa" }}>
-              <Sparkles className="size-3" /> About Me
-            </p>
-            <h1
-              className="font-hero uppercase leading-none mb-6"
-              style={{ fontSize: "clamp(2.5rem, 8vw, 6rem)", background: "linear-gradient(135deg, #a78bfa, #22d3ee)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}
+        <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full blur-[100px] opacity-10"
+          style={{ background: "radial-gradient(circle, #22d3ee, transparent 70%)" }} />
+
+        <div className="mx-auto max-w-7xl px-6 lg:px-10 py-16 lg:py-24 relative">
+          <div className="grid lg:grid-cols-12 gap-12 items-center">
+
+            {/* Left: copy */}
+            <motion.div
+              className="lg:col-span-6 space-y-7"
+              initial={{ opacity: 1, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
             >
-              Self-Taught.<br />Data-Driven.
-            </h1>
-            <p className="text-lg leading-relaxed max-w-3xl" style={{ color: "#94a3b8", fontFamily: "'Inter', sans-serif" }}>
-              I'm a results-driven Data Analyst and aspiring Data Scientist from Johannesburg with a strong passion for transforming raw data into powerful business insights.
-              I specialize in combining statistics, SQL, Python, and modern Business Intelligence tools to build intelligent dashboards, predictive models, and data-driven solutions
-              that help organizations make smarter, faster decisions. With a sharp analytical mindset and a strong eye for storytelling, I turn complex datasets into clear,
-              actionable strategies that drive growth, efficiency, and innovation.
-              <br /><br />
-              I am passionate about solving real-world problems through data, continuously learning emerging technologies, and creating impactful solutions that empower teams
-              to act confidently on their information. My goal is to bring technical excellence, creativity, and measurable value to forward-thinking companies looking to
-              unlock the full power of their data.
-            </p>
-            <div className="mt-8">
+              <p className="font-mono text-xs uppercase tracking-[0.25em] flex items-center gap-2" style={{ color: "#a78bfa" }}>
+                <Sparkles className="size-3" /> About Me
+              </p>
+              <h1
+                className="font-hero uppercase leading-none"
+                style={{ fontSize: "clamp(2.8rem, 8vw, 6rem)", background: "linear-gradient(135deg, #a78bfa, #22d3ee)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}
+              >
+                Self-Taught.<br />Data-Driven.
+              </h1>
+              <p className="text-base lg:text-lg leading-relaxed" style={{ color: "#94a3b8", fontFamily: "'Inter', sans-serif" }}>
+                I'm a results-driven Data Analyst and aspiring Data Scientist from Johannesburg with a strong passion for transforming raw data into powerful business insights.
+                I specialize in combining statistics, SQL, Python, and modern BI tools to build intelligent dashboards, predictive models, and data-driven solutions
+                that help organizations make smarter, faster decisions.
+              </p>
+              <p className="text-base leading-relaxed" style={{ color: "#64748b", fontFamily: "'Inter', sans-serif" }}>
+                My goal is to bring technical excellence, creativity, and measurable value to forward-thinking companies looking to unlock the full power of their data.
+              </p>
               <a
                 href="/teddy-mathabatha-cv.pdf"
                 download
                 className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 hover:-translate-y-0.5"
-                style={{ background: "linear-gradient(135deg, #a78bfa, #22d3ee)", color: "#fff", boxShadow: "0 0 24px rgba(167,139,250,0.3)" }}
+                style={{ background: "linear-gradient(135deg, #a78bfa, #22d3ee)", color: "#fff", boxShadow: "0 0 28px rgba(167,139,250,0.35)" }}
               >
                 <Download className="size-4" /> Download CV (PDF)
               </a>
-            </div>
-          </motion.div>
+            </motion.div>
+
+            {/* Right: profile stats card */}
+            <motion.div
+              className="lg:col-span-6"
+              initial={{ opacity: 1, y: 16, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div
+                className="rounded-2xl p-7 relative overflow-hidden"
+                style={{
+                  background: "rgba(10,13,32,0.85)",
+                  backdropFilter: "blur(24px)",
+                  border: "1px solid rgba(167,139,250,0.2)",
+                  boxShadow: "0 0 0 1px rgba(167,139,250,0.06), 0 8px 64px rgba(0,0,0,0.6), 0 0 60px rgba(167,139,250,0.06)",
+                }}
+              >
+                {/* Card header */}
+                <div className="flex items-center gap-2 mb-6 pb-5" style={{ borderBottom: "1px solid rgba(167,139,250,0.1)" }}>
+                  <div className="flex gap-1.5">
+                    <span className="size-3 rounded-full" style={{ background: "#ff5f57" }} />
+                    <span className="size-3 rounded-full" style={{ background: "#febc2e" }} />
+                    <span className="size-3 rounded-full" style={{ background: "#28c840" }} />
+                  </div>
+                  <span className="ml-2 font-mono text-[10px] uppercase tracking-widest" style={{ color: "#64748b" }}>analyst_profile.json</span>
+                  <span className="ml-auto text-[10px] px-2 py-0.5 rounded-full font-mono" style={{ background: "rgba(167,139,250,0.1)", color: "#a78bfa", border: "1px solid rgba(167,139,250,0.2)" }}>● OPEN TO WORK</span>
+                </div>
+
+                {/* Stats grid */}
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  {profileStats.map((s) => (
+                    <div
+                      key={s.label}
+                      className="p-4 rounded-xl transition-all duration-200 hover:-translate-y-0.5"
+                      style={{ background: `${s.color}08`, border: `1px solid ${s.color}18` }}
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <s.icon className="size-4" style={{ color: s.color }} />
+                      </div>
+                      <p className="font-orbitron font-bold text-xl" style={{ color: s.color }}>{s.value}</p>
+                      <p className="text-xs mt-1" style={{ color: "#64748b", fontFamily: "'Inter', sans-serif" }}>{s.label}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Current status rows */}
+                <div className="space-y-3">
+                  {[
+                    { label: "Location",      value: "Johannesburg, South Africa", color: "#22d3ee" },
+                    { label: "Degree",        value: "BSc Applied Maths & Stats — UNISA", color: "#a78bfa" },
+                    { label: "Focus",         value: "Data Analytics → Data Science", color: "#34d399" },
+                    { label: "Availability",  value: "Remote · Hybrid · On-site", color: "#fbbf24" },
+                  ].map(r => (
+                    <div key={r.label} className="flex items-start gap-3 py-2" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                      <span className="font-mono text-[10px] uppercase tracking-widest w-24 shrink-0 pt-0.5" style={{ color: "#475569" }}>{r.label}</span>
+                      <span className="text-sm font-medium" style={{ color: "#cbd5e1", fontFamily: "'Inter', sans-serif" }}>{r.value}</span>
+                      <span className="ml-auto size-2 rounded-full mt-1.5 shrink-0" style={{ background: r.color, boxShadow: `0 0 6px ${r.color}` }} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+
+          </div>
         </div>
       </div>
 
-      <div className="mx-auto max-w-5xl px-6 lg:px-10 py-16 space-y-20">
+      <div className="mx-auto max-w-7xl px-6 lg:px-10 py-16 space-y-20">
 
         {/* Education + Certifications */}
         <div className="grid md:grid-cols-2 gap-5">
           <motion.div
-            initial={{ opacity: 1, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 1, y: 12 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.5 }}
             className="p-8 rounded-2xl transition-all duration-300 hover:-translate-y-1"
             style={{ background: "rgba(12,16,36,0.75)", backdropFilter: "blur(20px)", border: "1px solid rgba(34,211,238,0.12)", boxShadow: "0 4px 32px rgba(0,0,0,0.3)" }}
@@ -193,7 +250,7 @@ function AboutPage() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 1, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 1, y: 12 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.08 }}
             className="p-8 rounded-2xl transition-all duration-300 hover:-translate-y-1"
             style={{ background: "rgba(12,16,36,0.75)", backdropFilter: "blur(20px)", border: "1px solid rgba(167,139,250,0.12)", boxShadow: "0 4px 32px rgba(0,0,0,0.3)" }}
@@ -219,7 +276,7 @@ function AboutPage() {
           </motion.div>
         </div>
 
-        {/* ── Skills & Tools ── */}
+        {/* Skills & Tools */}
         <div>
           <div className="mb-10">
             <p className="font-mono text-[10px] uppercase tracking-[0.25em] mb-2" style={{ color: "#22d3ee" }}>Proficiency</p>
@@ -228,29 +285,20 @@ function AboutPage() {
               Self-assessed proficiency across the full data workflow — from raw ingestion to business-ready insight.
             </p>
           </div>
-
           <div className="grid md:grid-cols-2 gap-5">
             {skillCategories.map((cat, ci) => (
               <motion.div
                 key={cat.label}
-                initial={{ opacity: 1, y: 16 }}
+                initial={{ opacity: 1, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ duration: 0.5, delay: ci * 0.08 }}
                 className="p-7 rounded-2xl space-y-5 transition-all duration-300 hover:-translate-y-1"
-                style={{
-                  background: "rgba(12,16,36,0.75)",
-                  backdropFilter: "blur(20px)",
-                  border: `1px solid ${cat.color}14`,
-                  boxShadow: "0 4px 32px rgba(0,0,0,0.3)",
-                }}
+                style={{ background: "rgba(12,16,36,0.75)", backdropFilter: "blur(20px)", border: `1px solid ${cat.color}14`, boxShadow: "0 4px 32px rgba(0,0,0,0.3)" }}
               >
-                {/* Category header */}
                 <div className="flex items-center gap-3 mb-6">
-                  <div
-                    className="size-10 rounded-xl grid place-items-center shrink-0"
-                    style={{ background: `${cat.color}12`, border: `1px solid ${cat.color}25` }}
-                  >
+                  <div className="size-10 rounded-xl grid place-items-center shrink-0"
+                    style={{ background: `${cat.color}12`, border: `1px solid ${cat.color}25` }}>
                     <cat.icon className="size-5" style={{ color: cat.color }} />
                   </div>
                   <div>
@@ -258,8 +306,6 @@ function AboutPage() {
                     <h3 className="font-poppins font-semibold text-sm" style={{ color: "#f1f5f9" }}>{cat.label}</h3>
                   </div>
                 </div>
-
-                {/* Skill bars */}
                 <div className="space-y-4">
                   {cat.skills.map((sk) => (
                     <SkillBar key={sk.name} name={sk.name} level={sk.level} color={cat.color} />
@@ -285,7 +331,7 @@ function AboutPage() {
             {achievements.map((a, i) => (
               <motion.div
                 key={a.title}
-                initial={{ opacity: 1, x: -12 }}
+                initial={{ opacity: 1, x: 0 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.07 }}

@@ -2,19 +2,24 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
+  Award,
   BarChart3,
   Brain,
+  Briefcase,
   Database,
   Download,
   FileSpreadsheet,
+  Github,
+  GraduationCap,
   LineChart,
   PieChart,
   Sparkles,
   Code2,
   TableProperties,
+  Zap,
 } from "lucide-react";
 import hivBg from "@/assets/hiv-stats-bg.jpg";
-import { HivPrevalenceChart, SalesTrendChart } from "@/components/charts/MiniCharts";
+import { HivPrevalenceChart, RegionBarChart, SalesTrendChart } from "@/components/charts/MiniCharts";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -53,6 +58,45 @@ const process = [
   { step: "04", title: "Communicate", body: "Translate findings into dashboards, charts, and a clear written recommendation." },
 ];
 
+const certifications = [
+  { title: "Data Analytics Professional", issuer: "Google · Coursera", year: "2024" },
+  { title: "SQL for Data Science", issuer: "IBM · Coursera", year: "2024" },
+  { title: "Power BI Data Analyst (PL-300)", issuer: "Microsoft Learn", year: "2024" },
+  { title: "Python for Data Science", issuer: "DataCamp", year: "2023" },
+];
+
+const experience = [
+  {
+    role: "Data Analyst (Freelance)",
+    org: "Independent projects · Johannesburg",
+    period: "2024 — Present",
+    bullets: [
+      "Built self-refreshing Power BI dashboards for a regional pharmacy chain (2,000+ records).",
+      "Identified a 12% sales uplift opportunity across two underserved provinces.",
+      "Authored data dictionaries and ETL documentation hand-overs for non-technical stakeholders.",
+    ],
+  },
+  {
+    role: "Public-Health Data Volunteer",
+    org: "Community HIV epidemiology initiative",
+    period: "2023 — 2024",
+    bullets: [
+      "Cleaned and modelled HIV prevalence + ART coverage data across 5 South African provinces.",
+      "Designed an interactive Tableau dashboard for clinic-level decision-making.",
+      "Translated statistical findings into one-page briefs for non-clinical leads.",
+    ],
+  },
+  {
+    role: "BSc Information Systems (in progress)",
+    org: "University of South Africa (UNISA)",
+    period: "2022 — Present",
+    bullets: [
+      "Coursework in statistics, databases, programming, and information modelling.",
+      "Self-directed study in machine learning, SQL window functions, and BI engineering.",
+    ],
+  },
+];
+
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
   show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const } },
@@ -84,37 +128,40 @@ function Index() {
             </motion.div>
             <motion.h1
               variants={fadeUp}
-              className="font-hero text-6xl sm:text-7xl lg:text-8xl xl:text-9xl leading-[0.9] uppercase text-foreground"
+              className="font-hero text-6xl sm:text-7xl lg:text-8xl xl:text-[8.5rem] leading-[0.9] uppercase text-foreground"
             >
-              <span className="block text-shimmer text-glow">Turning Raw Data</span>
-              <span className="block text-gradient text-glow">Into Decisions</span>
+              <span className="block text-shimmer text-glow">Turning Data Into</span>
+              <span className="block text-gradient text-glow">Intelligent Solutions</span>
             </motion.h1>
             <motion.p variants={fadeUp} className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
               I'm <span className="text-foreground font-medium">Teddy Mathabatha</span> — a data analyst and aspiring data scientist
-              from Johannesburg. I work across public-health and retail datasets, applying statistics,
-              SQL, Python, and BI tools to ship dashboards and insights that actually change how teams act.
+              from Johannesburg. I blend statistics, SQL, Python, and BI tools to ship dashboards,
+              models, and stories that change how teams act on their data.
             </motion.p>
             <motion.div variants={fadeUp} className="flex flex-wrap gap-3">
               <Link
                 to="/projects"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-md bg-primary text-primary-foreground font-medium hover:opacity-90 transition shadow-[var(--shadow-glow)]"
+                className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-md bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] text-primary-foreground font-semibold hover:bg-[position:100%_0] transition-[background-position] duration-500 shadow-[var(--shadow-glow)] animate-pulse-glow"
               >
+                <Zap className="size-4" />
                 <span>Explore case studies</span>
-                <ArrowRight className="size-4" />
+                <ArrowRight className="size-4 group-hover:translate-x-1 transition-transform" />
               </Link>
               <a
                 href="/teddy-mathabatha-cv.pdf"
                 download
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-md border border-border bg-card/60 backdrop-blur hover:bg-surface transition"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-md border border-border bg-card/60 backdrop-blur hover:border-primary/60 hover:text-primary transition"
               >
                 <Download className="size-4" /> Download CV
               </a>
-              <Link
-                to="/contact"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-md hover:text-primary transition"
+              <a
+                href="https://github.com/"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-md border border-border bg-card/60 backdrop-blur hover:border-primary/60 hover:text-primary transition"
               >
-                Get in touch <ArrowRight className="size-4" />
-              </Link>
+                <Github className="size-4" /> GitHub
+              </a>
             </motion.div>
           </motion.div>
 
@@ -252,6 +299,100 @@ function Index() {
               <SalesTrendChart />
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Experience */}
+      <section className="border-t border-border bg-surface/40">
+        <div className="mx-auto max-w-7xl px-6 lg:px-10 py-24">
+          <div className="flex items-end justify-between flex-wrap gap-6 mb-12">
+            <div>
+              <p className="text-xs uppercase tracking-widest text-primary mb-3 flex items-center gap-2">
+                <Briefcase className="size-3.5" /> Experience
+              </p>
+              <h2 className="font-display text-4xl md:text-5xl">Where I've been sharpening the craft</h2>
+            </div>
+            <p className="text-muted-foreground max-w-md">
+              Real datasets, real stakeholders, real decisions — across freelance, volunteer, and academic work.
+            </p>
+          </div>
+          <div className="relative">
+            <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-primary/40 to-transparent" />
+            <div className="space-y-10">
+              {experience.map((e, i) => (
+                <motion.div
+                  key={e.role}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-80px" }}
+                  transition={{ duration: 0.5, delay: i * 0.05 }}
+                  className={`relative grid md:grid-cols-2 gap-6 items-start ${i % 2 ? "md:[&>*:first-child]:order-2" : ""}`}
+                >
+                  <div className="absolute left-4 md:left-1/2 top-3 -translate-x-1/2 size-3 rounded-full bg-primary shadow-[0_0_16px_var(--color-primary)]" />
+                  <div className="pl-12 md:pl-0 md:pr-10 md:text-right">
+                    <p className="font-mono text-xs text-primary tracking-widest">{e.period}</p>
+                    <h3 className="font-display text-xl mt-2">{e.role}</h3>
+                    <p className="text-sm text-muted-foreground">{e.org}</p>
+                  </div>
+                  <div className="pl-12 md:pl-10">
+                    <ul className="space-y-2 text-sm text-muted-foreground">
+                      {e.bullets.map((b) => (
+                        <li key={b} className="flex gap-2">
+                          <span className="text-primary mt-1.5 size-1.5 rounded-full bg-primary shrink-0" />
+                          <span>{b}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Certifications */}
+      <section className="mx-auto max-w-7xl px-6 lg:px-10 py-24">
+        <div className="flex items-end justify-between flex-wrap gap-6 mb-12">
+          <div>
+            <p className="text-xs uppercase tracking-widest text-primary mb-3 flex items-center gap-2">
+              <Award className="size-3.5" /> Certifications & Education
+            </p>
+            <h2 className="font-display text-4xl md:text-5xl">Always shipping, always learning</h2>
+          </div>
+          <p className="text-muted-foreground max-w-md">
+            Continuous study across analytics platforms, programming, and statistical modelling.
+          </p>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {certifications.map((c, i) => (
+            <motion.div
+              key={c.title}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5, delay: (i % 4) * 0.06 }}
+              className="group p-6 rounded-xl border border-border bg-card/60 hover:bg-card hover:border-primary/50 hover:-translate-y-1 transition-all relative overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/0 via-primary/0 to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative">
+                <GraduationCap className="size-7 text-primary mb-5" />
+                <h3 className="font-display text-lg leading-tight mb-2">{c.title}</h3>
+                <p className="text-sm text-muted-foreground">{c.issuer}</p>
+                <p className="font-mono text-xs text-primary mt-3">{c.year}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+        <div className="mt-10 rounded-2xl border border-border bg-card/60 p-6">
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <div>
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Regional throughput</p>
+              <p className="font-display text-base">Records processed by province</p>
+            </div>
+            <span className="text-[10px] px-2 py-1 rounded-full bg-accent/10 text-accent font-mono">Sample dataset</span>
+          </div>
+          <RegionBarChart />
         </div>
       </section>
 

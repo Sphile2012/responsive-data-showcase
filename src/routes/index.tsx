@@ -302,6 +302,100 @@ function Index() {
         </div>
       </section>
 
+      {/* Experience */}
+      <section className="border-t border-border bg-surface/40">
+        <div className="mx-auto max-w-7xl px-6 lg:px-10 py-24">
+          <div className="flex items-end justify-between flex-wrap gap-6 mb-12">
+            <div>
+              <p className="text-xs uppercase tracking-widest text-primary mb-3 flex items-center gap-2">
+                <Briefcase className="size-3.5" /> Experience
+              </p>
+              <h2 className="font-display text-4xl md:text-5xl">Where I've been sharpening the craft</h2>
+            </div>
+            <p className="text-muted-foreground max-w-md">
+              Real datasets, real stakeholders, real decisions — across freelance, volunteer, and academic work.
+            </p>
+          </div>
+          <div className="relative">
+            <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-primary/40 to-transparent" />
+            <div className="space-y-10">
+              {experience.map((e, i) => (
+                <motion.div
+                  key={e.role}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-80px" }}
+                  transition={{ duration: 0.5, delay: i * 0.05 }}
+                  className={`relative grid md:grid-cols-2 gap-6 items-start ${i % 2 ? "md:[&>*:first-child]:order-2" : ""}`}
+                >
+                  <div className="absolute left-4 md:left-1/2 top-3 -translate-x-1/2 size-3 rounded-full bg-primary shadow-[0_0_16px_var(--color-primary)]" />
+                  <div className="pl-12 md:pl-0 md:pr-10 md:text-right">
+                    <p className="font-mono text-xs text-primary tracking-widest">{e.period}</p>
+                    <h3 className="font-display text-xl mt-2">{e.role}</h3>
+                    <p className="text-sm text-muted-foreground">{e.org}</p>
+                  </div>
+                  <div className="pl-12 md:pl-10">
+                    <ul className="space-y-2 text-sm text-muted-foreground">
+                      {e.bullets.map((b) => (
+                        <li key={b} className="flex gap-2">
+                          <span className="text-primary mt-1.5 size-1.5 rounded-full bg-primary shrink-0" />
+                          <span>{b}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Certifications */}
+      <section className="mx-auto max-w-7xl px-6 lg:px-10 py-24">
+        <div className="flex items-end justify-between flex-wrap gap-6 mb-12">
+          <div>
+            <p className="text-xs uppercase tracking-widest text-primary mb-3 flex items-center gap-2">
+              <Award className="size-3.5" /> Certifications & Education
+            </p>
+            <h2 className="font-display text-4xl md:text-5xl">Always shipping, always learning</h2>
+          </div>
+          <p className="text-muted-foreground max-w-md">
+            Continuous study across analytics platforms, programming, and statistical modelling.
+          </p>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {certifications.map((c, i) => (
+            <motion.div
+              key={c.title}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5, delay: (i % 4) * 0.06 }}
+              className="group p-6 rounded-xl border border-border bg-card/60 hover:bg-card hover:border-primary/50 hover:-translate-y-1 transition-all relative overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/0 via-primary/0 to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative">
+                <GraduationCap className="size-7 text-primary mb-5" />
+                <h3 className="font-display text-lg leading-tight mb-2">{c.title}</h3>
+                <p className="text-sm text-muted-foreground">{c.issuer}</p>
+                <p className="font-mono text-xs text-primary mt-3">{c.year}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+        <div className="mt-10 rounded-2xl border border-border bg-card/60 p-6">
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <div>
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Regional throughput</p>
+              <p className="font-display text-base">Records processed by province</p>
+            </div>
+            <span className="text-[10px] px-2 py-1 rounded-full bg-accent/10 text-accent font-mono">Sample dataset</span>
+          </div>
+          <RegionBarChart />
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="mx-auto max-w-5xl px-6 lg:px-10 pb-16">
         <div className="rounded-3xl border border-border bg-gradient-to-br from-surface to-background p-10 md:p-16 text-center relative overflow-hidden">

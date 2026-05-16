@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowRight,
   Award,
@@ -17,52 +18,114 @@ import {
   Code2,
   TableProperties,
   Zap,
+  TrendingUp,
+  Activity,
+  Globe,
 } from "lucide-react";
 import hivBg from "@/assets/hiv-stats-bg.jpg";
-import { HivPrevalenceChart, RegionBarChart, SalesTrendChart } from "@/components/charts/MiniCharts";
+import {
+  HivPrevalenceChart,
+  RegionBarChart,
+  SalesTrendChart,
+  QualityPieChart,
+} from "@/components/charts/MiniCharts";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Teddy Mathabatha — Data Analyst & Aspiring Data Scientist" },
-      { name: "description", content: "Portfolio of Teddy Mathabatha — turning raw data into decisions with SQL, Python, Power BI, Tableau, and Excel. Public-health analytics & business dashboards." },
-      { property: "og:title", content: "Teddy Mathabatha — Data Analyst Portfolio" },
-      { property: "og:description", content: "Case studies in HIV epidemiology, retail analytics, and dashboard engineering." },
+      { name: "description", content: "Portfolio of Teddy Mathabatha — turning raw data into decisions with SQL, Python, Power BI, Tableau, and Excel." },
     ],
   }),
   component: Index,
 });
 
+/* ── Typing effect hook ── */
+function useTypingEffect(words: string[], speed = 80, pause = 2000) {
+  const [display, setDisplay] = useState("");
+  const [wordIdx, setWordIdx] = useState(0);
+  const [charIdx, setCharIdx] = useState(0);
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    const word = words[wordIdx];
+    let timeout: ReturnType<typeof setTimeout>;
+    if (!deleting && charIdx <= word.length) {
+      timeout = setTimeout(() => {
+        setDisplay(word.slice(0, charIdx));
+        setCharIdx((c) => c + 1);
+      }, speed);
+    } else if (!deleting && charIdx > word.length) {
+      timeout = setTimeout(() => setDeleting(true), pause);
+    } else if (deleting && charIdx > 0) {
+      timeout = setTimeout(() => {
+        setCharIdx((c) => c - 1);
+        setDisplay(word.slice(0, charIdx - 1));
+      }, speed / 2);
+    } else {
+      setDeleting(false);
+      setWordIdx((i) => (i + 1) % words.length);
+    }
+    return () => clearTimeout(timeout);
+  }, [charIdx, deleting, wordIdx, words, speed, pause]);
+
+  return display;
+}
+
+/* ── Animated counter ── */
+function AnimatedCounter({ end, suffix = "", duration = 2000 }: { end: number; suffix?: string; duration?: number }) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true });
+
+  useEffect(() => {
+    if (!inView) return;
+    const step = end / (duration / 16);
+    let current = 0;
+    const timer = setInterval(() => {
+      current = Math.min(current + step, end);
+      setCount(Math.floor(current));
+      if (current >= end) clearInterval(timer);
+    }, 16);
+    return () => clearInterval(timer);
+  }, [inView, end, duration]);
+
+  return <span ref={ref}>{count}{suffix}</span>;
+}
+
+/* ── Data ── */
+const typingWords = ["Data Analyst", "BI Engineer", "ML Practitioner", "Data Storyteller", "SQL Architect"];
+
 const skills = [
-  { icon: Code2, name: "Python", detail: "pandas · numpy · matplotlib · scikit-learn" },
-  { icon: Database, name: "SQL", detail: "Joins · CTEs · window functions" },
-  { icon: BarChart3, name: "Power BI & Tableau", detail: "DAX · Power Query · interactive dashboards" },
-  { icon: FileSpreadsheet, name: "Advanced Excel", detail: "Pivot · Slicers · Power Pivot" },
-  { icon: Brain, name: "Statistics & ML", detail: "Regression · clustering · hypothesis testing" },
-  { icon: LineChart, name: "Data Storytelling", detail: "Narratives · visual hierarchy · recommendations" },
-  { icon: TableProperties, name: "Big Data Tools", detail: "Spark fundamentals · cloud data warehousing" },
-  { icon: PieChart, name: "Data Quality & ETL", detail: "Cleaning · documentation · source mapping" },
+  { icon: Code2,           name: "Python",              detail: "pandas · numpy · matplotlib · scikit-learn", color: "#22d3ee" },
+  { icon: Database,        name: "SQL",                 detail: "Joins · CTEs · window functions",             color: "#a78bfa" },
+  { icon: BarChart3,       name: "Power BI & Tableau",  detail: "DAX · Power Query · interactive dashboards",  color: "#f472b6" },
+  { icon: FileSpreadsheet, name: "Advanced Excel",      detail: "Pivot · Slicers · Power Pivot",               color: "#34d399" },
+  { icon: Brain,           name: "Statistics & ML",     detail: "Regression · clustering · hypothesis testing", color: "#fbbf24" },
+  { icon: LineChart,       name: "Data Storytelling",   detail: "Narratives · visual hierarchy · recs",        color: "#22d3ee" },
+  { icon: TableProperties, name: "Big Data Tools",      detail: "Spark fundamentals · cloud warehousing",      color: "#a78bfa" },
+  { icon: PieChart,        name: "Data Quality & ETL",  detail: "Cleaning · documentation · source mapping",   color: "#f472b6" },
 ];
 
 const stats = [
-  { value: "2,000+", label: "Records analyzed" },
-  { value: "5", label: "Provinces covered" },
-  { value: "30+", label: "Data attributes mapped" },
-  { value: "12%", label: "Uplift identified" },
+  { value: 2000, suffix: "+", label: "Records analyzed",     icon: Database },
+  { value: 5,    suffix: "",  label: "Provinces covered",    icon: Globe },
+  { value: 30,   suffix: "+", label: "Data attributes mapped", icon: TableProperties },
+  { value: 12,   suffix: "%", label: "Uplift identified",    icon: TrendingUp },
 ];
 
 const process = [
-  { step: "01", title: "Define", body: "Understand the question behind the question. Align on the decision the data must support." },
-  { step: "02", title: "Acquire & clean", body: "Pull from sources, validate schemas, and handle missing, duplicate, or invalid records." },
-  { step: "03", title: "Analyse", body: "Explore distributions, surface trends and outliers, and test hypotheses with the right statistic." },
-  { step: "04", title: "Communicate", body: "Translate findings into dashboards, charts, and a clear written recommendation." },
+  { step: "01", title: "Define",          body: "Understand the question behind the question. Align on the decision the data must support." },
+  { step: "02", title: "Acquire & Clean", body: "Pull from sources, validate schemas, and handle missing, duplicate, or invalid records." },
+  { step: "03", title: "Analyse",         body: "Explore distributions, surface trends and outliers, and test hypotheses with the right statistic." },
+  { step: "04", title: "Communicate",     body: "Translate findings into dashboards, charts, and a clear written recommendation." },
 ];
 
 const certifications = [
-  { title: "Data Analytics Professional", issuer: "Google · Coursera", year: "2024" },
-  { title: "SQL for Data Science", issuer: "IBM · Coursera", year: "2024" },
-  { title: "Power BI Data Analyst (PL-300)", issuer: "Microsoft Learn", year: "2024" },
-  { title: "Python for Data Science", issuer: "DataCamp", year: "2023" },
+  { title: "Data Analytics Professional", issuer: "Google · Coursera",  year: "2024", color: "#22d3ee" },
+  { title: "SQL for Data Science",        issuer: "IBM · Coursera",     year: "2024", color: "#a78bfa" },
+  { title: "Power BI Data Analyst (PL-300)", issuer: "Microsoft Learn", year: "2024", color: "#34d399" },
+  { title: "Python for Data Science",     issuer: "DataCamp",           year: "2023", color: "#fbbf24" },
 ];
 
 const experience = [
@@ -98,59 +161,104 @@ const experience = [
 ];
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const } },
+  hidden: { opacity: 0, y: 28 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const } },
 };
 
+const stagger = { show: { transition: { staggerChildren: 0.09 } } };
+
+/* ── Component ── */
 function Index() {
+  const typedText = useTypingEffect(typingWords);
+
   return (
-    <div>
-      {/* Hero */}
-      <section className="relative overflow-hidden border-b border-border">
+    <div className="overflow-x-hidden">
+
+      {/* ══ HERO ══ */}
+      <section className="relative min-h-screen flex items-center overflow-hidden border-b border-border">
+        {/* Background layers */}
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-50"
-          style={{ backgroundImage: `url(${hivBg})` }}
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url(${hivBg})`, opacity: 0.18 }}
           aria-hidden="true"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/85 via-background/75 to-background" aria-hidden="true" />
-        <div className="absolute inset-0 grid-bg opacity-40" aria-hidden="true" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/80 to-background" aria-hidden="true" />
+        <div className="absolute inset-0 grid-bg opacity-30" aria-hidden="true" />
 
-        <div className="relative mx-auto max-w-7xl px-6 lg:px-10 pt-20 pb-24 grid lg:grid-cols-12 gap-12 items-center">
+        {/* Ambient orbs */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-[120px] opacity-20"
+          style={{ background: "radial-gradient(circle, #22d3ee, transparent 70%)" }} aria-hidden="true" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full blur-[100px] opacity-15"
+          style={{ background: "radial-gradient(circle, #a78bfa, transparent 70%)" }} aria-hidden="true" />
+
+        <div className="relative mx-auto max-w-7xl px-6 lg:px-10 pt-24 pb-28 w-full grid lg:grid-cols-12 gap-14 items-center">
+
+          {/* Left: copy */}
           <motion.div
-            initial="hidden"
-            animate="show"
-            variants={{ show: { transition: { staggerChildren: 0.08 } } }}
-            className="lg:col-span-7 space-y-7"
+            initial="hidden" animate="show" variants={stagger}
+            className="lg:col-span-7 space-y-8"
           >
-            <motion.div variants={fadeUp} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-card/80 backdrop-blur text-xs uppercase tracking-widest text-muted-foreground">
-              <Sparkles className="size-3 text-primary" />
-              <span>Open to data analyst & data science roles</span>
+            {/* Badge */}
+            <motion.div variants={fadeUp}>
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10 backdrop-blur text-xs font-mono uppercase tracking-widest text-primary">
+                <Activity className="size-3 animate-pulse" />
+                Open to data analyst &amp; data science roles
+              </span>
             </motion.div>
-            <motion.h1
-              variants={fadeUp}
-              className="font-hero text-6xl sm:text-7xl lg:text-8xl xl:text-[8.5rem] leading-[0.9] uppercase text-foreground"
-            >
-              <span className="block text-shimmer text-glow">Turning Data Into</span>
-              <span className="block text-gradient text-glow">Intelligent Solutions</span>
-            </motion.h1>
-            <motion.p variants={fadeUp} className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
-              I'm <span className="text-foreground font-medium">Teddy Mathabatha</span> — a data analyst and aspiring data scientist
-              from Johannesburg. I blend statistics, SQL, Python, and BI tools to ship dashboards,
-              models, and stories that change how teams act on their data.
+
+            {/* Main headline */}
+            <motion.div variants={fadeUp} className="space-y-2">
+              <h1
+                className="font-hero leading-[0.88] uppercase"
+                style={{ fontSize: "clamp(3.5rem, 10vw, 9rem)" }}
+              >
+                <span className="block text-shimmer">Turning Data</span>
+                <span className="block text-gradient-hero text-glow">Into Decisions</span>
+              </h1>
+            </motion.div>
+
+            {/* Typing line */}
+            <motion.div variants={fadeUp} className="flex items-center gap-3">
+              <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">I am a</span>
+              <span
+                className="font-orbitron text-sm sm:text-base font-semibold text-glow-sm"
+                style={{ color: "#22d3ee", minWidth: "16ch", display: "inline-block" }}
+              >
+                {typedText}
+                <span className="animate-blink" style={{ color: "#a78bfa" }}>|</span>
+              </span>
+            </motion.div>
+
+            {/* Paragraph */}
+            <motion.p variants={fadeUp} className="text-base sm:text-lg text-muted-foreground max-w-xl leading-relaxed">
+              I'm{" "}
+              <span className="font-semibold" style={{ color: "#e2e8f0" }}>Teddy Mathabatha</span>
+              {" "}— a data analyst from Johannesburg blending SQL, Python, and BI tools to ship dashboards, models, and stories that change how teams act on their data.
             </motion.p>
+
+            {/* CTAs */}
             <motion.div variants={fadeUp} className="flex flex-wrap gap-3">
               <Link
                 to="/projects"
-                className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-md bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] text-primary-foreground font-semibold hover:bg-[position:100%_0] transition-[background-position] duration-500 shadow-[var(--shadow-glow)] animate-pulse-glow"
+                className="group inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl font-semibold text-sm transition-all duration-300 animate-pulse-glow"
+                style={{
+                  background: "linear-gradient(135deg, #00e5ff, #7c3aed, #f472b6)",
+                  backgroundSize: "200% 200%",
+                  color: "#fff",
+                  boxShadow: "0 0 32px rgba(34,211,238,0.35)",
+                }}
               >
                 <Zap className="size-4" />
-                <span>Explore case studies</span>
+                Explore Case Studies
                 <ArrowRight className="size-4 group-hover:translate-x-1 transition-transform" />
               </Link>
               <a
                 href="/teddy-mathabatha-cv.pdf"
                 download
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-md border border-border bg-card/60 backdrop-blur hover:border-primary/60 hover:text-primary transition"
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl border text-sm font-medium transition-all hover:-translate-y-0.5"
+                style={{ borderColor: "oklch(0.78 0.18 200 / 0.3)", background: "rgba(20,25,50,0.5)", backdropFilter: "blur(12px)" }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "#22d3ee"; (e.currentTarget as HTMLElement).style.color = "#22d3ee"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "oklch(0.78 0.18 200 / 0.3)"; (e.currentTarget as HTMLElement).style.color = ""; }}
               >
                 <Download className="size-4" /> Download CV
               </a>
@@ -158,187 +266,400 @@ function Index() {
                 href="https://github.com/"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-md border border-border bg-card/60 backdrop-blur hover:border-primary/60 hover:text-primary transition"
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl border text-sm font-medium transition-all hover:-translate-y-0.5"
+                style={{ borderColor: "oklch(0.78 0.18 200 / 0.3)", background: "rgba(20,25,50,0.5)", backdropFilter: "blur(12px)" }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "#a78bfa"; (e.currentTarget as HTMLElement).style.color = "#a78bfa"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "oklch(0.78 0.18 200 / 0.3)"; (e.currentTarget as HTMLElement).style.color = ""; }}
               >
                 <Github className="size-4" /> GitHub
               </a>
             </motion.div>
           </motion.div>
 
-          {/* Live mini dashboard preview */}
+          {/* Right: live dashboard card */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="lg:col-span-5"
+            initial={{ opacity: 0, y: 40, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 1, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:col-span-5 animate-float"
           >
-            <div className="rounded-2xl border border-border bg-card/90 backdrop-blur-xl p-5 shadow-[var(--shadow-soft)]">
-              <div className="flex items-center justify-between mb-4">
+            <div
+              className="rounded-2xl p-5 relative overflow-hidden"
+              style={{
+                background: "rgba(12, 16, 36, 0.75)",
+                backdropFilter: "blur(24px)",
+                border: "1px solid rgba(34,211,238,0.2)",
+                boxShadow: "0 0 0 1px rgba(34,211,238,0.08), 0 8px 64px -8px rgba(0,0,0,0.7), 0 0 60px rgba(34,211,238,0.08)",
+              }}
+            >
+              {/* Card top bar */}
+              <div className="flex items-center gap-1.5 mb-4">
+                <span className="size-3 rounded-full" style={{ background: "#ff5f57" }} />
+                <span className="size-3 rounded-full" style={{ background: "#febc2e" }} />
+                <span className="size-3 rounded-full" style={{ background: "#28c840" }} />
+                <span className="ml-3 font-mono text-[10px] uppercase tracking-widest" style={{ color: "#64748b" }}>live_dashboard.py</span>
+                <span className="ml-auto text-[10px] px-2 py-0.5 rounded-full font-mono" style={{ background: "rgba(34,211,238,0.1)", color: "#22d3ee", border: "1px solid rgba(34,211,238,0.2)" }}>● LIVE</span>
+              </div>
+              <div className="flex items-center justify-between mb-1">
                 <div>
-                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Live preview</p>
-                  <p className="font-display text-lg">HIV indicators · South Africa</p>
+                  <p className="text-[10px] uppercase tracking-widest" style={{ color: "#64748b" }}>HIV Indicators · South Africa</p>
+                  <p className="font-poppins font-semibold text-base text-foreground">Prevalence &amp; ART Coverage</p>
                 </div>
-                <span className="text-[10px] px-2 py-1 rounded-full bg-primary/10 text-primary font-mono">2018–2023</span>
+                <span className="text-[10px] px-2 py-1 rounded-full font-mono" style={{ background: "rgba(167,139,250,0.1)", color: "#a78bfa", border: "1px solid rgba(167,139,250,0.2)" }}>2018–2023</span>
               </div>
               <HivPrevalenceChart />
-              <div className="grid grid-cols-3 gap-3 mt-4 pt-4 border-t border-border">
-                <div>
-                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Prevalence</p>
-                  <p className="font-display text-lg text-foreground">14.0%</p>
-                </div>
-                <div>
-                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground">ART coverage</p>
-                  <p className="font-display text-lg text-foreground">82%</p>
-                </div>
-                <div>
-                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground">YoY Δ ART</p>
-                  <p className="font-display text-lg text-primary">+3 pp</p>
-                </div>
+              <div className="grid grid-cols-3 gap-3 mt-4 pt-4" style={{ borderTop: "1px solid rgba(34,211,238,0.1)" }}>
+                {[
+                  { label: "Prevalence", value: "14.0%", color: "#22d3ee" },
+                  { label: "ART coverage", value: "82%", color: "#a78bfa" },
+                  { label: "YoY Δ ART", value: "+3 pp", color: "#34d399" },
+                ].map(m => (
+                  <div key={m.label}>
+                    <p className="text-[9px] uppercase tracking-widest mb-1" style={{ color: "#64748b" }}>{m.label}</p>
+                    <p className="font-orbitron font-bold text-base" style={{ color: m.color }}>{m.value}</p>
+                  </div>
+                ))}
               </div>
             </div>
           </motion.div>
         </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50">
+          <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">scroll</span>
+          <motion.div
+            animate={{ y: [0, 6, 0] }}
+            transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+            className="w-px h-8"
+            style={{ background: "linear-gradient(to bottom, #22d3ee, transparent)" }}
+          />
+        </div>
       </section>
 
-      {/* Stats strip */}
-      <section className="border-y border-border bg-surface/40">
+      {/* ══ STATS STRIP ══ */}
+      <section style={{ borderBottom: "1px solid rgba(34,211,238,0.1)", background: "rgba(12,16,36,0.5)" }}>
         <div className="mx-auto max-w-7xl px-6 lg:px-10 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
           {stats.map((s, i) => (
             <motion.div
               key={s.label}
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.08 }}
+              transition={{ duration: 0.5, delay: i * 0.09 }}
+              className="group flex items-center gap-4"
             >
-              <div className="font-display text-3xl md:text-4xl text-gradient">{s.value}</div>
-              <div className="text-xs uppercase tracking-widest text-muted-foreground mt-2">{s.label}</div>
+              <div
+                className="shrink-0 size-10 rounded-xl grid place-items-center transition-all group-hover:scale-110"
+                style={{ background: "rgba(34,211,238,0.1)", border: "1px solid rgba(34,211,238,0.2)" }}
+              >
+                <s.icon className="size-4" style={{ color: "#22d3ee" }} />
+              </div>
+              <div>
+                <div className="font-orbitron font-bold text-2xl md:text-3xl text-gradient">
+                  <AnimatedCounter end={s.value} suffix={s.suffix} />
+                </div>
+                <div className="text-[11px] uppercase tracking-widest text-muted-foreground mt-0.5">{s.label}</div>
+              </div>
             </motion.div>
           ))}
         </div>
       </section>
 
-      {/* Skills */}
-      <section className="mx-auto max-w-7xl px-6 lg:px-10 py-24">
-        <div className="flex items-end justify-between flex-wrap gap-6 mb-12">
-          <div>
-            <p className="text-xs uppercase tracking-widest text-primary mb-3">Toolkit</p>
-            <h2 className="font-display text-4xl md:text-5xl">The full data science stack</h2>
-          </div>
-          <p className="text-muted-foreground max-w-md">
+      {/* ══ SKILLS ══ */}
+      <section className="mx-auto max-w-7xl px-6 lg:px-10 py-28">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <p className="font-mono text-xs uppercase tracking-[0.25em] mb-4" style={{ color: "#22d3ee" }}>Technical Arsenal</p>
+          <h2 className="font-montserrat font-bold text-4xl md:text-5xl mb-4">
+            The Full{" "}
+            <span className="text-gradient-hero">Data Science</span>
+            {" "}Stack
+          </h2>
+          <p className="text-muted-foreground max-w-lg mx-auto">
             From raw extracts and ETL pipelines through statistical modelling, machine learning, and the dashboards executives actually open.
           </p>
-        </div>
+        </motion.div>
+
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {skills.map((s, i) => (
             <motion.div
               key={s.name}
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: (i % 4) * 0.06 }}
-              className="group p-6 rounded-xl border border-border bg-surface/60 hover:bg-surface hover:border-primary/40 transition-all hover:-translate-y-1"
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.5, delay: (i % 4) * 0.07 }}
+              className="group relative p-6 rounded-2xl cursor-default transition-all duration-300 hover:-translate-y-2"
+              style={{
+                background: "rgba(14, 18, 42, 0.65)",
+                backdropFilter: "blur(16px)",
+                border: "1px solid rgba(255,255,255,0.06)",
+              }}
+              onMouseEnter={e => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.border = `1px solid ${s.color}40`;
+                el.style.boxShadow = `0 0 32px ${s.color}18, 0 8px 32px rgba(0,0,0,0.4)`;
+              }}
+              onMouseLeave={e => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.border = "1px solid rgba(255,255,255,0.06)";
+                el.style.boxShadow = "none";
+              }}
             >
-              <s.icon className="size-7 text-primary mb-5" />
-              <h3 className="font-display text-xl mb-1">{s.name}</h3>
-              <p className="text-sm text-muted-foreground">{s.detail}</p>
+              {/* Glow corner */}
+              <div
+                className="absolute top-0 right-0 w-20 h-20 rounded-tr-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                style={{ background: `radial-gradient(circle at top right, ${s.color}20, transparent 70%)` }}
+              />
+              <div
+                className="size-12 rounded-xl grid place-items-center mb-5 transition-all duration-300 group-hover:scale-110"
+                style={{ background: `${s.color}18`, border: `1px solid ${s.color}30` }}
+              >
+                <s.icon className="size-6" style={{ color: s.color }} />
+              </div>
+              <h3 className="font-poppins font-semibold text-lg mb-1.5 text-foreground">{s.name}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{s.detail}</p>
+              <div
+                className="absolute bottom-0 left-6 right-6 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                style={{ background: `linear-gradient(90deg, transparent, ${s.color}60, transparent)` }}
+              />
             </motion.div>
           ))}
         </div>
       </section>
 
-      {/* Process */}
-      <section className="border-t border-border bg-surface/40">
-        <div className="mx-auto max-w-7xl px-6 lg:px-10 py-24">
-          <div className="grid lg:grid-cols-12 gap-12">
-            <div className="lg:col-span-4">
-              <p className="text-xs uppercase tracking-widest text-primary mb-3">How I work</p>
-              <h2 className="font-display text-4xl md:text-5xl mb-6">A repeatable analytics process</h2>
-              <p className="text-muted-foreground">
-                Every project follows the same four steps — so the work is auditable, the recommendations
-                are defensible, and the dashboards stay alive after handover.
-              </p>
-            </div>
-            <div className="lg:col-span-8 grid sm:grid-cols-2 gap-5">
-              {process.map((p) => (
-                <div key={p.step} className="p-6 rounded-xl border border-border bg-card/70">
-                  <div className="font-mono text-xs text-primary mb-3">{p.step}</div>
-                  <h3 className="font-display text-xl mb-2">{p.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{p.body}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured project teaser */}
-      <section className="mx-auto max-w-7xl px-6 lg:px-10 py-24">
-        <div className="grid lg:grid-cols-12 gap-10 items-center">
-          <div className="lg:col-span-5">
-            <p className="text-xs uppercase tracking-widest text-primary mb-3">Featured case study</p>
-            <h2 className="font-display text-4xl md:text-5xl mb-5">Pharmacy OTC sales — from messy CSVs to a regional growth plan.</h2>
-            <p className="text-muted-foreground mb-6">
-              Cleaned 2,000+ transaction records, modelled them in SQL, and surfaced a 12% uplift opportunity
-              concentrated in two underserved regions. Final deliverable: a self-refreshing dashboard plus a
-              one-page recommendation.
+      {/* ══ LIVE CHARTS DASHBOARD ══ */}
+      <section style={{ borderTop: "1px solid rgba(34,211,238,0.08)", borderBottom: "1px solid rgba(34,211,238,0.08)", background: "rgba(8,10,28,0.6)" }}>
+        <div className="mx-auto max-w-7xl px-6 lg:px-10 py-28">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <p className="font-mono text-xs uppercase tracking-[0.25em] mb-4" style={{ color: "#a78bfa" }}>Interactive Analytics</p>
+            <h2 className="font-montserrat font-bold text-4xl md:text-5xl mb-4">
+              Data{" "}
+              <span className="text-gradient">Visualisations</span>
+              {" "}Live
+            </h2>
+            <p className="text-muted-foreground max-w-lg mx-auto">
+              Real datasets from public-health and retail work — rendered interactively across every device.
             </p>
-            <Link to="/projects" className="inline-flex items-center gap-2 px-6 py-3 rounded-md bg-primary text-primary-foreground font-medium hover:opacity-90 transition">
-              Read the case study <ArrowRight className="size-4" />
-            </Link>
-          </div>
-          <div className="lg:col-span-7">
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-soft)]">
-              <div className="flex items-center justify-between mb-4">
+          </motion.div>
+
+          <div className="grid lg:grid-cols-2 gap-6">
+            {/* Chart card 1 */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="rounded-2xl p-6 group hover:-translate-y-1 transition-all duration-300"
+              style={{
+                background: "rgba(12,16,36,0.8)",
+                backdropFilter: "blur(20px)",
+                border: "1px solid rgba(34,211,238,0.12)",
+                boxShadow: "0 4px 40px rgba(0,0,0,0.4)",
+              }}
+            >
+              <div className="flex items-center justify-between mb-5 flex-wrap gap-2">
                 <div>
-                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Monthly OTC sales (R '000s)</p>
-                  <p className="font-display text-base">Sales vs target · YTD</p>
+                  <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">OTC Sales (R '000s)</p>
+                  <p className="font-poppins font-semibold text-base text-foreground mt-0.5">Sales vs Target · YTD</p>
                 </div>
-                <span className="text-[10px] px-2 py-1 rounded-full bg-accent/10 text-accent font-mono">+12% MoM peak</span>
+                <span className="text-[10px] px-2.5 py-1 rounded-full font-mono" style={{ background: "rgba(244,114,182,0.12)", color: "#f472b6", border: "1px solid rgba(244,114,182,0.25)" }}>+12% MoM peak</span>
               </div>
               <SalesTrendChart />
-            </div>
+            </motion.div>
+
+            {/* Chart card 2 */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="rounded-2xl p-6 group hover:-translate-y-1 transition-all duration-300"
+              style={{
+                background: "rgba(12,16,36,0.8)",
+                backdropFilter: "blur(20px)",
+                border: "1px solid rgba(167,139,250,0.12)",
+                boxShadow: "0 4px 40px rgba(0,0,0,0.4)",
+              }}
+            >
+              <div className="flex items-center justify-between mb-5 flex-wrap gap-2">
+                <div>
+                  <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">Regional throughput</p>
+                  <p className="font-poppins font-semibold text-base text-foreground mt-0.5">Records by Province</p>
+                </div>
+                <span className="text-[10px] px-2.5 py-1 rounded-full font-mono" style={{ background: "rgba(167,139,250,0.12)", color: "#a78bfa", border: "1px solid rgba(167,139,250,0.25)" }}>Sample dataset</span>
+              </div>
+              <RegionBarChart />
+            </motion.div>
+
+            {/* Chart card 3 */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.15 }}
+              className="rounded-2xl p-6 group hover:-translate-y-1 transition-all duration-300"
+              style={{
+                background: "rgba(12,16,36,0.8)",
+                backdropFilter: "blur(20px)",
+                border: "1px solid rgba(52,211,153,0.12)",
+                boxShadow: "0 4px 40px rgba(0,0,0,0.4)",
+              }}
+            >
+              <div className="flex items-center justify-between mb-5 flex-wrap gap-2">
+                <div>
+                  <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">Data quality audit</p>
+                  <p className="font-poppins font-semibold text-base text-foreground mt-0.5">Record Quality Breakdown</p>
+                </div>
+                <span className="text-[10px] px-2.5 py-1 rounded-full font-mono" style={{ background: "rgba(52,211,153,0.12)", color: "#34d399", border: "1px solid rgba(52,211,153,0.25)" }}>ETL output</span>
+              </div>
+              <QualityPieChart />
+            </motion.div>
+
+            {/* Chart card 4 */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="rounded-2xl p-6 group hover:-translate-y-1 transition-all duration-300"
+              style={{
+                background: "rgba(12,16,36,0.8)",
+                backdropFilter: "blur(20px)",
+                border: "1px solid rgba(34,211,238,0.12)",
+                boxShadow: "0 4px 40px rgba(0,0,0,0.4)",
+              }}
+            >
+              <div className="flex items-center justify-between mb-5 flex-wrap gap-2">
+                <div>
+                  <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">Public health · South Africa</p>
+                  <p className="font-poppins font-semibold text-base text-foreground mt-0.5">HIV Prevalence &amp; ART Coverage</p>
+                </div>
+                <span className="text-[10px] px-2.5 py-1 rounded-full font-mono" style={{ background: "rgba(34,211,238,0.1)", color: "#22d3ee", border: "1px solid rgba(34,211,238,0.2)" }}>2018–2023</span>
+              </div>
+              <HivPrevalenceChart />
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Experience */}
-      <section className="border-t border-border bg-surface/40">
-        <div className="mx-auto max-w-7xl px-6 lg:px-10 py-24">
-          <div className="flex items-end justify-between flex-wrap gap-6 mb-12">
-            <div>
-              <p className="text-xs uppercase tracking-widest text-primary mb-3 flex items-center gap-2">
-                <Briefcase className="size-3.5" /> Experience
-              </p>
-              <h2 className="font-display text-4xl md:text-5xl">Where I've been sharpening the craft</h2>
-            </div>
-            <p className="text-muted-foreground max-w-md">
-              Real datasets, real stakeholders, real decisions — across freelance, volunteer, and academic work.
+      {/* ══ PROCESS ══ */}
+      <section className="mx-auto max-w-7xl px-6 lg:px-10 py-28">
+        <div className="grid lg:grid-cols-12 gap-14 items-start">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="lg:col-span-4 lg:sticky lg:top-24"
+          >
+            <p className="font-mono text-xs uppercase tracking-[0.25em] mb-4" style={{ color: "#22d3ee" }}>How I Work</p>
+            <h2 className="font-montserrat font-bold text-4xl md:text-5xl mb-5">
+              A Repeatable <span className="text-gradient">Analytics</span> Process
+            </h2>
+            <p className="text-muted-foreground leading-relaxed">
+              Every project follows the same four steps — so the work is auditable, the recommendations are defensible, and the dashboards stay alive after handover.
             </p>
+          </motion.div>
+
+          <div className="lg:col-span-8 grid sm:grid-cols-2 gap-4">
+            {process.map((p, i) => (
+              <motion.div
+                key={p.step}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.5, delay: i * 0.08 }}
+                className="group relative p-7 rounded-2xl transition-all duration-300 hover:-translate-y-1"
+                style={{
+                  background: "rgba(14,18,42,0.7)",
+                  backdropFilter: "blur(16px)",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                }}
+                onMouseEnter={e => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.border = "1px solid rgba(34,211,238,0.25)";
+                  el.style.boxShadow = "0 0 24px rgba(34,211,238,0.08), 0 8px 32px rgba(0,0,0,0.4)";
+                }}
+                onMouseLeave={e => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.border = "1px solid rgba(255,255,255,0.06)";
+                  el.style.boxShadow = "none";
+                }}
+              >
+                <div className="font-orbitron text-4xl font-bold mb-4 opacity-20 group-hover:opacity-40 transition-opacity" style={{ color: "#22d3ee" }}>{p.step}</div>
+                <h3 className="font-poppins font-semibold text-xl mb-3 text-foreground">{p.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{p.body}</p>
+              </motion.div>
+            ))}
           </div>
+        </div>
+      </section>
+
+      {/* ══ EXPERIENCE ══ */}
+      <section style={{ borderTop: "1px solid rgba(34,211,238,0.08)", background: "rgba(8,10,28,0.5)" }}>
+        <div className="mx-auto max-w-7xl px-6 lg:px-10 py-28">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <p className="font-mono text-xs uppercase tracking-[0.25em] mb-4 flex items-center justify-center gap-2" style={{ color: "#22d3ee" }}>
+              <Briefcase className="size-3.5" /> Experience
+            </p>
+            <h2 className="font-montserrat font-bold text-4xl md:text-5xl">
+              Where I've Been <span className="text-gradient">Sharpening</span> the Craft
+            </h2>
+          </motion.div>
+
           <div className="relative">
-            <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-primary/40 to-transparent" />
-            <div className="space-y-10">
+            {/* Timeline line */}
+            <div
+              className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px"
+              style={{ background: "linear-gradient(to bottom, transparent, rgba(34,211,238,0.4) 20%, rgba(167,139,250,0.4) 80%, transparent)" }}
+            />
+            <div className="space-y-12">
               {experience.map((e, i) => (
                 <motion.div
                   key={e.role}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-80px" }}
-                  transition={{ duration: 0.5, delay: i * 0.05 }}
-                  className={`relative grid md:grid-cols-2 gap-6 items-start ${i % 2 ? "md:[&>*:first-child]:order-2" : ""}`}
+                  viewport={{ once: true, margin: "-60px" }}
+                  transition={{ duration: 0.6, delay: i * 0.06 }}
+                  className={`relative grid md:grid-cols-2 gap-8 items-start ${i % 2 ? "md:[&>*:first-child]:order-2" : ""}`}
                 >
-                  <div className="absolute left-4 md:left-1/2 top-3 -translate-x-1/2 size-3 rounded-full bg-primary shadow-[0_0_16px_var(--color-primary)]" />
-                  <div className="pl-12 md:pl-0 md:pr-10 md:text-right">
-                    <p className="font-mono text-xs text-primary tracking-widest">{e.period}</p>
-                    <h3 className="font-display text-xl mt-2">{e.role}</h3>
-                    <p className="text-sm text-muted-foreground">{e.org}</p>
+                  {/* Timeline dot */}
+                  <div
+                    className="absolute left-4 md:left-1/2 top-4 -translate-x-1/2 size-3.5 rounded-full"
+                    style={{ background: "#22d3ee", boxShadow: "0 0 16px #22d3ee, 0 0 32px rgba(34,211,238,0.5)" }}
+                  />
+                  {/* Left */}
+                  <div className="pl-12 md:pl-0 md:pr-12 md:text-right">
+                    <p className="font-mono text-xs uppercase tracking-widest mb-2" style={{ color: "#22d3ee" }}>{e.period}</p>
+                    <h3 className="font-poppins font-semibold text-xl text-foreground">{e.role}</h3>
+                    <p className="text-sm text-muted-foreground mt-1">{e.org}</p>
                   </div>
-                  <div className="pl-12 md:pl-10">
-                    <ul className="space-y-2 text-sm text-muted-foreground">
+                  {/* Right */}
+                  <div className="pl-12 md:pl-12">
+                    <ul className="space-y-3">
                       {e.bullets.map((b) => (
-                        <li key={b} className="flex gap-2">
-                          <span className="text-primary mt-1.5 size-1.5 rounded-full bg-primary shrink-0" />
+                        <li key={b} className="flex gap-3 text-sm text-muted-foreground">
+                          <span
+                            className="mt-2 size-1.5 rounded-full shrink-0"
+                            style={{ background: "#22d3ee", boxShadow: "0 0 8px #22d3ee" }}
+                          />
                           <span>{b}</span>
                         </li>
                       ))}
@@ -351,78 +672,127 @@ function Index() {
         </div>
       </section>
 
-      {/* Certifications */}
-      <section className="mx-auto max-w-7xl px-6 lg:px-10 py-24">
-        <div className="flex items-end justify-between flex-wrap gap-6 mb-12">
-          <div>
-            <p className="text-xs uppercase tracking-widest text-primary mb-3 flex items-center gap-2">
-              <Award className="size-3.5" /> Certifications & Education
-            </p>
-            <h2 className="font-display text-4xl md:text-5xl">Always shipping, always learning</h2>
-          </div>
-          <p className="text-muted-foreground max-w-md">
-            Continuous study across analytics platforms, programming, and statistical modelling.
+      {/* ══ CERTIFICATIONS ══ */}
+      <section className="mx-auto max-w-7xl px-6 lg:px-10 py-28">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <p className="font-mono text-xs uppercase tracking-[0.25em] mb-4 flex items-center justify-center gap-2" style={{ color: "#fbbf24" }}>
+            <Award className="size-3.5" /> Certifications
           </p>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <h2 className="font-montserrat font-bold text-4xl md:text-5xl">
+            Always Shipping, <span className="text-gradient-hero">Always Learning</span>
+          </h2>
+        </motion.div>
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-10">
           {certifications.map((c, i) => (
             <motion.div
               key={c.title}
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: (i % 4) * 0.06 }}
-              className="group p-6 rounded-xl border border-border bg-card/60 hover:bg-card hover:border-primary/50 hover:-translate-y-1 transition-all relative overflow-hidden"
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.5, delay: (i % 4) * 0.08 }}
+              className="group relative p-7 rounded-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden"
+              style={{
+                background: "rgba(14,18,42,0.7)",
+                backdropFilter: "blur(16px)",
+                border: "1px solid rgba(255,255,255,0.06)",
+              }}
+              onMouseEnter={e => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.border = `1px solid ${c.color}35`;
+                el.style.boxShadow = `0 0 32px ${c.color}12, 0 8px 40px rgba(0,0,0,0.5)`;
+              }}
+              onMouseLeave={e => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.border = "1px solid rgba(255,255,255,0.06)";
+                el.style.boxShadow = "none";
+              }}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/0 via-primary/0 to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div
+                className="absolute top-0 right-0 w-24 h-24 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-tr-2xl"
+                style={{ background: `radial-gradient(circle at top right, ${c.color}20, transparent 70%)` }}
+              />
               <div className="relative">
-                <GraduationCap className="size-7 text-primary mb-5" />
-                <h3 className="font-display text-lg leading-tight mb-2">{c.title}</h3>
+                <div
+                  className="size-12 rounded-xl grid place-items-center mb-5"
+                  style={{ background: `${c.color}15`, border: `1px solid ${c.color}30` }}
+                >
+                  <GraduationCap className="size-6" style={{ color: c.color }} />
+                </div>
+                <h3 className="font-poppins font-semibold text-base leading-snug mb-2 text-foreground">{c.title}</h3>
                 <p className="text-sm text-muted-foreground">{c.issuer}</p>
-                <p className="font-mono text-xs text-primary mt-3">{c.year}</p>
+                <p className="font-mono text-xs mt-3" style={{ color: c.color }}>{c.year}</p>
               </div>
             </motion.div>
           ))}
         </div>
-        <div className="mt-10 rounded-2xl border border-border bg-card/60 p-6">
-          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-            <div>
-              <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Regional throughput</p>
-              <p className="font-display text-base">Records processed by province</p>
-            </div>
-            <span className="text-[10px] px-2 py-1 rounded-full bg-accent/10 text-accent font-mono">Sample dataset</span>
-          </div>
-          <RegionBarChart />
-        </div>
       </section>
 
-      {/* CTA */}
-      <section className="mx-auto max-w-5xl px-6 lg:px-10 pb-16">
-        <div className="rounded-3xl border border-border bg-gradient-to-br from-surface to-background p-10 md:p-16 text-center relative overflow-hidden">
-          <div className="absolute inset-0 grid-bg opacity-30" />
+      {/* ══ CTA ══ */}
+      <section className="mx-auto max-w-5xl px-6 lg:px-10 pb-20">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="relative rounded-3xl p-12 md:p-20 text-center overflow-hidden"
+          style={{
+            background: "linear-gradient(135deg, rgba(14,18,42,0.9) 0%, rgba(20,10,40,0.9) 100%)",
+            backdropFilter: "blur(24px)",
+            border: "1px solid rgba(34,211,238,0.15)",
+            boxShadow: "0 0 80px rgba(34,211,238,0.06), 0 0 160px rgba(167,139,250,0.04)",
+          }}
+        >
+          <div className="absolute inset-0 grid-bg opacity-20" />
+          {/* Corner glows */}
+          <div className="absolute top-0 left-0 w-64 h-64 rounded-tl-3xl opacity-30" style={{ background: "radial-gradient(circle at top left, rgba(34,211,238,0.2), transparent 60%)" }} />
+          <div className="absolute bottom-0 right-0 w-64 h-64 rounded-br-3xl opacity-30" style={{ background: "radial-gradient(circle at bottom right, rgba(167,139,250,0.2), transparent 60%)" }} />
           <div className="relative">
-            <h2 className="font-display text-3xl md:text-5xl mb-4">Have a dataset that needs answers?</h2>
-            <p className="text-muted-foreground max-w-xl mx-auto mb-8">
+            <p className="font-mono text-xs uppercase tracking-[0.25em] mb-4" style={{ color: "#22d3ee" }}>Let's Work Together</p>
+            <h2 className="font-montserrat font-bold text-3xl md:text-5xl mb-5">
+              Have a Dataset That <span className="text-gradient-hero">Needs Answers?</span>
+            </h2>
+            <p className="text-muted-foreground max-w-xl mx-auto mb-10 leading-relaxed">
               I take raw spreadsheets, messy exports, and tangled questions — and return the chart, the number, and the recommendation.
             </p>
-            <div className="flex flex-wrap justify-center gap-3">
+            <div className="flex flex-wrap justify-center gap-4">
               <Link
                 to="/contact"
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-md bg-primary text-primary-foreground font-medium hover:opacity-90 transition"
+                className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl font-semibold text-sm transition-all duration-300 hover:-translate-y-1"
+                style={{
+                  background: "linear-gradient(135deg, #00e5ff, #7c3aed)",
+                  color: "#fff",
+                  boxShadow: "0 0 32px rgba(34,211,238,0.3)",
+                }}
               >
-                Start a conversation <ArrowRight className="size-4" />
+                Start a Conversation <ArrowRight className="size-4" />
               </Link>
               <a
                 href="/teddy-mathabatha-cv.pdf"
                 download
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-md border border-border hover:border-primary hover:text-primary transition"
+                className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl font-semibold text-sm transition-all duration-300 hover:-translate-y-1"
+                style={{
+                  border: "1px solid rgba(34,211,238,0.25)",
+                  background: "rgba(14,18,42,0.5)",
+                  backdropFilter: "blur(12px)",
+                  color: "#e2e8f0",
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "#22d3ee"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(34,211,238,0.25)"; }}
               >
                 <Download className="size-4" /> Download CV
               </a>
             </div>
           </div>
-        </div>
+        </motion.div>
       </section>
+
     </div>
   );
 }

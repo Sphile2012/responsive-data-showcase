@@ -82,8 +82,12 @@ function Index() {
               <Sparkles className="size-3 text-primary" />
               <span>Open to data analyst & data science roles</span>
             </motion.div>
-            <motion.h1 variants={fadeUp} className="font-display text-5xl sm:text-6xl lg:text-7xl leading-[0.95] text-foreground">
-              Turning raw data into <em className="text-gradient not-italic">real-world decisions</em>.
+            <motion.h1
+              variants={fadeUp}
+              className="font-hero text-6xl sm:text-7xl lg:text-8xl xl:text-9xl leading-[0.9] uppercase text-foreground"
+            >
+              <span className="block text-shimmer text-glow">Turning Raw Data</span>
+              <span className="block text-gradient text-glow">Into Decisions</span>
             </motion.h1>
             <motion.p variants={fadeUp} className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
               I'm <span className="text-foreground font-medium">Teddy Mathabatha</span> — a data analyst and aspiring data scientist

@@ -4,7 +4,6 @@ import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import tailwindcss from "@tailwindcss/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-// Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
 export default defineConfig({
   plugins: [
     tanstackRouter(),
@@ -12,6 +11,10 @@ export default defineConfig({
     tailwindcss(),
     tsconfigPaths(),
   ],
+  build: {
+    outDir: "dist/client",
+    emptyOutDir: true,
+  },
   server: {
     host: "0.0.0.0",
     port: 5000,

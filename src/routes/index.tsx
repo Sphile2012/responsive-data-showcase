@@ -2,19 +2,24 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
+  Award,
   BarChart3,
   Brain,
+  Briefcase,
   Database,
   Download,
   FileSpreadsheet,
+  Github,
+  GraduationCap,
   LineChart,
   PieChart,
   Sparkles,
   Code2,
   TableProperties,
+  Zap,
 } from "lucide-react";
 import hivBg from "@/assets/hiv-stats-bg.jpg";
-import { HivPrevalenceChart, SalesTrendChart } from "@/components/charts/MiniCharts";
+import { HivPrevalenceChart, RegionBarChart, SalesTrendChart } from "@/components/charts/MiniCharts";
 
 export const Route = createFileRoute("/")({
   head: () => ({

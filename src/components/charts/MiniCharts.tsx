@@ -15,13 +15,35 @@ import {
   YAxis,
 } from "recharts";
 
+// Neon palette — explicit hex so SVG renders crisply on dark backgrounds
+const CYAN = "#22d3ee";
+const VIOLET = "#a78bfa";
+const PINK = "#f472b6";
+const LIME = "#a3e635";
+const GRID = "rgba(148, 163, 184, 0.18)";
+const AXIS = "rgba(148, 163, 184, 0.85)";
+
 const tooltipStyle = {
-  background: "var(--color-card)",
-  border: "1px solid var(--color-border)",
-  borderRadius: 8,
+  background: "rgba(15, 18, 34, 0.95)",
+  border: "1px solid rgba(34, 211, 238, 0.4)",
+  borderRadius: 10,
   fontSize: 12,
-  color: "var(--color-foreground)",
+  color: "#e2e8f0",
+  boxShadow: "0 0 24px rgba(34, 211, 238, 0.25)",
+  backdropFilter: "blur(8px)",
 };
+
+const glowFilter = (
+  <defs>
+    <filter id="neon-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3.5" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+);
 
 export function SalesTrendChart() {
   const data = [
@@ -35,20 +57,37 @@ export function SalesTrendChart() {
     { m: "Aug", sales: 241, target: 205 },
   ];
   return (
-    <ResponsiveContainer width="100%" height={220}>
-      <AreaChart data={data} margin={{ top: 5, right: 10, bottom: 0, left: -20 }}>
+    <ResponsiveContainer width="100%" height={240}>
+      <AreaChart data={data} margin={{ top: 10, right: 12, bottom: 0, left: -18 }}>
         <defs>
-          <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="var(--color-primary)" stopOpacity={0.45} />
-            <stop offset="100%" stopColor="var(--color-primary)" stopOpacity={0} />
+          <linearGradient id="salesFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={CYAN} stopOpacity={0.55} />
+            <stop offset="100%" stopColor={CYAN} stopOpacity={0} />
           </linearGradient>
+          <linearGradient id="salesStroke" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor={CYAN} />
+            <stop offset="100%" stopColor={VIOLET} />
+          </linearGradient>
+          <filter id="glow-sales" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="2.5" result="b" />
+            <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
         </defs>
-        <CartesianGrid stroke="var(--color-border)" strokeDasharray="3 3" vertical={false} />
-        <XAxis dataKey="m" tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }} stroke="var(--color-border)" />
-        <YAxis tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }} stroke="var(--color-border)" />
+        <CartesianGrid stroke={GRID} strokeDasharray="3 3" vertical={false} />
+        <XAxis dataKey="m" tick={{ fontSize: 11, fill: AXIS }} stroke={GRID} />
+        <YAxis tick={{ fontSize: 11, fill: AXIS }} stroke={GRID} />
         <Tooltip contentStyle={tooltipStyle} />
-        <Area type="monotone" dataKey="sales" stroke="var(--color-primary)" strokeWidth={2} fill="url(#g1)" />
-        <Line type="monotone" dataKey="target" stroke="var(--color-accent)" strokeWidth={1.5} strokeDasharray="4 4" dot={false} />
+        <Area
+          type="monotone"
+          dataKey="sales"
+          stroke="url(#salesStroke)"
+          strokeWidth={3}
+          fill="url(#salesFill)"
+          filter="url(#glow-sales)"
+          dot={{ r: 3, fill: CYAN, stroke: "#0f1222", strokeWidth: 2 }}
+          activeDot={{ r: 5, fill: CYAN }}
+        />
+        <Line type="monotone" dataKey="target" stroke={PINK} strokeWidth={2} strokeDasharray="5 5" dot={false} />
       </AreaChart>
     </ResponsiveContainer>
   );
@@ -63,13 +102,23 @@ export function RegionBarChart() {
     { r: "Limpopo", v: 191 },
   ];
   return (
-    <ResponsiveContainer width="100%" height={220}>
-      <BarChart data={data} margin={{ top: 5, right: 10, bottom: 0, left: -20 }}>
-        <CartesianGrid stroke="var(--color-border)" strokeDasharray="3 3" vertical={false} />
-        <XAxis dataKey="r" tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }} stroke="var(--color-border)" />
-        <YAxis tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }} stroke="var(--color-border)" />
-        <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "var(--color-muted)" }} />
-        <Bar dataKey="v" fill="var(--color-primary)" radius={[6, 6, 0, 0]} />
+    <ResponsiveContainer width="100%" height={240}>
+      <BarChart data={data} margin={{ top: 10, right: 12, bottom: 0, left: -18 }}>
+        <defs>
+          <linearGradient id="barFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={CYAN} />
+            <stop offset="100%" stopColor={VIOLET} />
+          </linearGradient>
+          <filter id="glow-bar" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="2" result="b" />
+            <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+        </defs>
+        <CartesianGrid stroke={GRID} strokeDasharray="3 3" vertical={false} />
+        <XAxis dataKey="r" tick={{ fontSize: 11, fill: AXIS }} stroke={GRID} />
+        <YAxis tick={{ fontSize: 11, fill: AXIS }} stroke={GRID} />
+        <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "rgba(34,211,238,0.08)" }} />
+        <Bar dataKey="v" fill="url(#barFill)" radius={[8, 8, 0, 0]} filter="url(#glow-bar)" />
       </BarChart>
     </ResponsiveContainer>
   );
@@ -82,12 +131,28 @@ export function QualityPieChart() {
     { name: "Duplicate", value: 11 },
     { name: "Invalid", value: 7 },
   ];
-  const colors = ["var(--color-primary)", "var(--color-accent)", "#9ca3af", "#d1d5db"];
+  const colors = [CYAN, VIOLET, PINK, LIME];
   return (
-    <ResponsiveContainer width="100%" height={220}>
+    <ResponsiveContainer width="100%" height={240}>
       <PieChart>
+        <defs>
+          <filter id="glow-pie" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="b" />
+            <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+        </defs>
         <Tooltip contentStyle={tooltipStyle} />
-        <Pie data={data} dataKey="value" nameKey="name" innerRadius={48} outerRadius={80} paddingAngle={2}>
+        <Pie
+          data={data}
+          dataKey="value"
+          nameKey="name"
+          innerRadius={52}
+          outerRadius={88}
+          paddingAngle={3}
+          stroke="#0f1222"
+          strokeWidth={2}
+          filter="url(#glow-pie)"
+        >
           {data.map((_, i) => (
             <Cell key={i} fill={colors[i]} />
           ))}
@@ -107,14 +172,38 @@ export function HivPrevalenceChart() {
     { y: "2023", prev: 14.0, art: 82 },
   ];
   return (
-    <ResponsiveContainer width="100%" height={220}>
-      <LineChart data={data} margin={{ top: 5, right: 10, bottom: 0, left: -20 }}>
-        <CartesianGrid stroke="var(--color-border)" strokeDasharray="3 3" vertical={false} />
-        <XAxis dataKey="y" tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }} stroke="var(--color-border)" />
-        <YAxis tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }} stroke="var(--color-border)" />
+    <ResponsiveContainer width="100%" height={240}>
+      <LineChart data={data} margin={{ top: 10, right: 12, bottom: 0, left: -18 }}>
+        <defs>
+          <filter id="glow-line" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="2.5" result="b" />
+            <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+        </defs>
+        <CartesianGrid stroke={GRID} strokeDasharray="3 3" vertical={false} />
+        <XAxis dataKey="y" tick={{ fontSize: 11, fill: AXIS }} stroke={GRID} />
+        <YAxis tick={{ fontSize: 11, fill: AXIS }} stroke={GRID} />
         <Tooltip contentStyle={tooltipStyle} />
-        <Line type="monotone" dataKey="prev" name="Prevalence %" stroke="var(--color-primary)" strokeWidth={2.5} dot={{ r: 3 }} />
-        <Line type="monotone" dataKey="art" name="ART coverage %" stroke="var(--color-accent)" strokeWidth={2.5} dot={{ r: 3 }} />
+        <Line
+          type="monotone"
+          dataKey="prev"
+          name="Prevalence %"
+          stroke={CYAN}
+          strokeWidth={3}
+          dot={{ r: 4, fill: CYAN, stroke: "#0f1222", strokeWidth: 2 }}
+          activeDot={{ r: 6 }}
+          filter="url(#glow-line)"
+        />
+        <Line
+          type="monotone"
+          dataKey="art"
+          name="ART coverage %"
+          stroke={VIOLET}
+          strokeWidth={3}
+          dot={{ r: 4, fill: VIOLET, stroke: "#0f1222", strokeWidth: 2 }}
+          activeDot={{ r: 6 }}
+          filter="url(#glow-line)"
+        />
       </LineChart>
     </ResponsiveContainer>
   );

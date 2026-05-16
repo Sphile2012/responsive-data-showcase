@@ -13,8 +13,6 @@ export const Route = createFileRoute("/projects")({
     meta: [
       { title: "Projects & Case Studies — Teddy Mathabatha" },
       { name: "description", content: "Detailed data analysis and data science case studies — pharmacy retail analytics, HIV epidemiology dashboards, and data quality engineering." },
-      { property: "og:title", content: "Projects — Teddy Mathabatha" },
-      { property: "og:description", content: "Problem · data · methods · tools · impact for every project." },
     ],
   }),
   component: ProjectsPage,
@@ -27,11 +25,13 @@ type CaseStudy = {
   data: string;
   methods: string;
   tools: string[];
+  toolColors: string[];
   impact: string[];
   github?: string;
   demo?: string;
   chart: "sales" | "region" | "hiv" | "quality";
   chartCaption: string;
+  accentColor: string;
 };
 
 const cases: CaseStudy[] = [
@@ -45,6 +45,7 @@ const cases: CaseStudy[] = [
     methods:
       "Built an Excel + SQL pipeline: standardised schemas with Power Query, deduplicated on transaction key, joined product master data, then computed YoY, MoM, and per-region growth in SQL CTEs. Final layer: an interactive Excel dashboard with slicers and a written one-pager.",
     tools: ["SQL", "Excel", "Power Query", "Pivot Tables", "DAX (basic)"],
+    toolColors: ["#22d3ee", "#a78bfa", "#34d399", "#fbbf24", "#f472b6"],
     impact: [
       "Identified a 12% revenue uplift opportunity concentrated in 2 under-served provinces",
       "Cut monthly reporting time from ~4 hours to ~20 minutes",
@@ -53,6 +54,7 @@ const cases: CaseStudy[] = [
     github: "https://github.com/TeddyDataHub",
     chart: "sales",
     chartCaption: "Monthly OTC sales vs target — YTD trend used in the executive deck.",
+    accentColor: "#22d3ee",
   },
   {
     tag: "Public Health · BI Dashboard",
@@ -64,6 +66,7 @@ const cases: CaseStudy[] = [
     methods:
       "Modelled a star schema in Power BI (fact: indicators, dims: province × year × indicator-type). Authored DAX measures for YoY change, gap-to-target, and percentile rank. Built a landing page with KPI cards and a drill-through province profile.",
     tools: ["Power BI", "DAX", "Power Query", "Data Modelling", "Storytelling"],
+    toolColors: ["#a78bfa", "#22d3ee", "#f472b6", "#34d399", "#fbbf24"],
     impact: [
       "ART coverage trend visible at a glance — closed gap from 62% (2018) to 82% (2023)",
       "Drill-through province pages cut analyst question turnaround from days to minutes",
@@ -72,6 +75,7 @@ const cases: CaseStudy[] = [
     github: "https://github.com/TeddyDataHub",
     chart: "hiv",
     chartCaption: "National HIV prevalence vs ART coverage — 2018 to 2023.",
+    accentColor: "#a78bfa",
   },
   {
     tag: "Data Engineering · Quality",
@@ -81,8 +85,9 @@ const cases: CaseStudy[] = [
     data:
       "30+ attributes across 6 source systems (CSV exports, two operational databases, spreadsheets, and a survey tool). Mixed quality, undocumented joins, no canonical IDs.",
     methods:
-      "Profiled every column with SQL and Python (pandas), defined business-friendly names + data dictionaries, mapped source → staging → mart transformations, and classified quality issues into 4 categories (Missing, Duplicate, Invalid, Inconsistent) with remediation owners.",
+      "Profiled every column with SQL and Python (pandas), defined business-friendly names + data dictionaries, mapped source → staging → mart transformations, and classified quality issues into 4 categories with remediation owners.",
     tools: ["Python (pandas)", "SQL", "Notion", "Mermaid diagrams", "Data dictionaries"],
+    toolColors: ["#34d399", "#22d3ee", "#a78bfa", "#fbbf24", "#f472b6"],
     impact: [
       "Onboarding time for new analysts cut from ~5 days to ~1 day",
       "18% of records flagged as missing or duplicate — remediation roadmap accepted",
@@ -91,6 +96,7 @@ const cases: CaseStudy[] = [
     github: "https://github.com/TeddyDataHub",
     chart: "quality",
     chartCaption: "Record quality breakdown across the 6 ingested sources.",
+    accentColor: "#34d399",
   },
   {
     tag: "Retail Analytics · Geographic",
@@ -100,8 +106,9 @@ const cases: CaseStudy[] = [
     data:
       "Aggregated provincial sales joined with publicly available StatsSA population estimates and a custom region-tier classification.",
     methods:
-      "Computed per-capita sales index, indexed each region to the national average, and clustered provinces into 3 tiers using a simple k-means in Python. Visualised as a ranked bar chart with annotations.",
+      "Computed per-capita sales index, indexed each region to the national average, and clustered provinces into 3 tiers using k-means in Python. Visualised as a ranked bar chart with annotations.",
     tools: ["Python", "scikit-learn", "Tableau", "Statistics"],
+    toolColors: ["#fbbf24", "#22d3ee", "#f472b6", "#a78bfa"],
     impact: [
       "Identified Limpopo and Eastern Cape as highest-leverage growth regions",
       "Reallocated 18% of marketing spend toward two under-served regions",
@@ -110,84 +117,140 @@ const cases: CaseStudy[] = [
     github: "https://github.com/TeddyDataHub",
     chart: "region",
     chartCaption: "Per-region OTC sales volume — used to rank investment priority.",
+    accentColor: "#fbbf24",
   },
 ];
 
 function chartFor(kind: CaseStudy["chart"]) {
   switch (kind) {
-    case "sales":
-      return <SalesTrendChart />;
-    case "region":
-      return <RegionBarChart />;
-    case "hiv":
-      return <HivPrevalenceChart />;
-    case "quality":
-      return <QualityPieChart />;
+    case "sales":   return <SalesTrendChart />;
+    case "region":  return <RegionBarChart />;
+    case "hiv":     return <HivPrevalenceChart />;
+    case "quality": return <QualityPieChart />;
   }
 }
 
 function ProjectsPage() {
   return (
-    <div className="mx-auto max-w-7xl px-6 lg:px-10 py-20">
-      <div className="max-w-2xl mb-16">
-        <p className="text-xs uppercase tracking-widest text-primary mb-3">Selected work</p>
-        <h1 className="font-display text-5xl md:text-6xl mb-6">Case studies</h1>
-        <p className="text-muted-foreground text-lg">
-          Each case study walks through the problem, the data, the methods, the tools — and the
-          measurable impact. Source code lives on GitHub.
-        </p>
+    <div className="overflow-x-hidden">
+      {/* Page header */}
+      <div className="relative border-b overflow-hidden" style={{ borderColor: "rgba(34,211,238,0.1)" }}>
+        <div className="absolute inset-0 grid-bg opacity-20" />
+        <div className="absolute top-0 left-1/4 w-64 h-64 rounded-full blur-[100px] opacity-15"
+          style={{ background: "radial-gradient(circle, #22d3ee, transparent 70%)" }} />
+        <div className="mx-auto max-w-7xl px-6 lg:px-10 py-20 relative">
+          <motion.div
+            initial={{ opacity: 1, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <p className="font-mono text-xs uppercase tracking-[0.25em] mb-4" style={{ color: "#22d3ee" }}>
+              Selected Work
+            </p>
+            <h1
+              className="font-hero uppercase leading-none mb-6"
+              style={{ fontSize: "clamp(2.5rem, 8vw, 6rem)", background: "linear-gradient(135deg, #00e5ff, #7c3aed, #f472b6)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}
+            >
+              Case Studies
+            </h1>
+            <p className="text-lg text-muted-foreground max-w-2xl leading-relaxed" style={{ fontFamily: "'Inter', sans-serif" }}>
+              Each case study walks through the problem, the data, the methods, the tools — and the measurable impact. Source code lives on GitHub.
+            </p>
+          </motion.div>
+        </div>
       </div>
 
-      <div className="space-y-10">
+      {/* Case studies */}
+      <div className="mx-auto max-w-7xl px-6 lg:px-10 py-16 space-y-10">
         {cases.map((c, i) => (
           <motion.article
             key={c.title}
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 1, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
+            viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="grid lg:grid-cols-12 gap-8 p-6 md:p-10 rounded-3xl border border-border bg-surface/60 hover:border-primary/30 transition-colors"
+            className="group grid lg:grid-cols-12 gap-8 p-7 md:p-10 rounded-3xl transition-all duration-300"
+            style={{
+              background: "rgba(12,16,36,0.75)",
+              backdropFilter: "blur(20px)",
+              border: `1px solid rgba(255,255,255,0.06)`,
+            }}
+            onMouseEnter={e => {
+              const el = e.currentTarget as HTMLElement;
+              el.style.border = `1px solid ${c.accentColor}25`;
+              el.style.boxShadow = `0 0 48px ${c.accentColor}08, 0 8px 48px rgba(0,0,0,0.5)`;
+            }}
+            onMouseLeave={e => {
+              const el = e.currentTarget as HTMLElement;
+              el.style.border = "1px solid rgba(255,255,255,0.06)";
+              el.style.boxShadow = "none";
+            }}
           >
+            {/* Left: content */}
             <div className="lg:col-span-7 space-y-6">
-              <div className="flex items-center gap-3 text-xs">
-                <span className="font-mono text-muted-foreground">0{i + 1}</span>
-                <span className="uppercase tracking-widest text-primary">{c.tag}</span>
+              <div className="flex items-center gap-3">
+                <span
+                  className="font-orbitron text-xs font-bold px-2.5 py-1 rounded-full"
+                  style={{ color: c.accentColor, background: `${c.accentColor}18`, border: `1px solid ${c.accentColor}30` }}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">{c.tag}</span>
               </div>
-              <h2 className="font-display text-3xl md:text-4xl leading-tight">{c.title}</h2>
 
-              <div className="space-y-5 text-sm md:text-base">
-                <CaseRow icon={Target} label="Problem">{c.problem}</CaseRow>
-                <CaseRow icon={DbIcon} label="Data">{c.data}</CaseRow>
-                <CaseRow icon={Wrench} label="Methods">{c.methods}</CaseRow>
-                <CaseRow icon={TrendingUp} label="Impact">
-                  <ul className="space-y-1.5 mt-1">
+              <h2
+                className="font-montserrat font-bold text-2xl md:text-3xl leading-snug"
+                style={{ color: "#f1f5f9" }}
+              >
+                {c.title}
+              </h2>
+
+              <div className="space-y-5">
+                <CaseRow icon={Target}    label="Problem"  accentColor={c.accentColor}>{c.problem}</CaseRow>
+                <CaseRow icon={DbIcon}    label="Data"     accentColor={c.accentColor}>{c.data}</CaseRow>
+                <CaseRow icon={Wrench}    label="Methods"  accentColor={c.accentColor}>{c.methods}</CaseRow>
+                <CaseRow icon={TrendingUp} label="Impact"  accentColor={c.accentColor}>
+                  <ul className="space-y-2 mt-1">
                     {c.impact.map((it) => (
-                      <li key={it} className="flex gap-2">
-                        <span className="text-primary mt-0.5">▸</span>
-                        <span className="text-muted-foreground">{it}</span>
+                      <li key={it} className="flex gap-2.5 items-start">
+                        <span className="mt-1.5 size-1.5 rounded-full shrink-0" style={{ background: c.accentColor, boxShadow: `0 0 8px ${c.accentColor}` }} />
+                        <span className="text-muted-foreground leading-relaxed">{it}</span>
                       </li>
                     ))}
                   </ul>
                 </CaseRow>
               </div>
 
-              <div className="flex flex-wrap gap-2 pt-2">
-                {c.tools.map((t) => (
-                  <span key={t} className="text-xs px-2.5 py-1 rounded-full border border-border bg-background/60 text-muted-foreground">
+              {/* Tool badges */}
+              <div className="flex flex-wrap gap-2 pt-1">
+                {c.tools.map((t, ti) => (
+                  <span
+                    key={t}
+                    className="text-xs px-3 py-1 rounded-full font-mono"
+                    style={{
+                      color: c.toolColors[ti] ?? "#94a3b8",
+                      background: `${c.toolColors[ti] ?? "#94a3b8"}12`,
+                      border: `1px solid ${c.toolColors[ti] ?? "#94a3b8"}25`,
+                    }}
+                  >
                     {t}
                   </span>
                 ))}
               </div>
 
-              <div className="flex flex-wrap gap-3 pt-2">
+              {/* Links */}
+              <div className="flex flex-wrap gap-3 pt-1">
                 {c.github && (
                   <a
                     href={c.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-border hover:border-primary hover:text-primary transition text-sm"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
+                    style={{ border: `1px solid ${c.accentColor}25`, color: "#94a3b8", background: "rgba(14,18,42,0.5)" }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = c.accentColor; (e.currentTarget as HTMLElement).style.borderColor = `${c.accentColor}60`; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "#94a3b8"; (e.currentTarget as HTMLElement).style.borderColor = `${c.accentColor}25`; }}
                   >
-                    <Github className="size-4" /> Source <ExternalLink className="size-3" />
+                    <Github className="size-4" /> View on GitHub <ExternalLink className="size-3" />
                   </a>
                 )}
                 {c.demo && (
@@ -195,21 +258,37 @@ function ProjectsPage() {
                     href={c.demo}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-primary text-primary-foreground hover:opacity-90 transition text-sm"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover:-translate-y-0.5"
+                    style={{ background: `linear-gradient(135deg, ${c.accentColor}, #7c3aed)`, color: "#fff" }}
                   >
-                    Live demo <ExternalLink className="size-3" />
+                    Live Demo <ExternalLink className="size-3" />
                   </a>
                 )}
               </div>
             </div>
 
+            {/* Right: chart */}
             <div className="lg:col-span-5">
-              <div className="rounded-2xl border border-border bg-card p-5 h-full flex flex-col">
-                <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-4">
-                  Sample visualisation
-                </p>
+              <div
+                className="rounded-2xl p-5 h-full flex flex-col"
+                style={{
+                  background: "rgba(8,10,24,0.8)",
+                  border: `1px solid ${c.accentColor}18`,
+                }}
+              >
+                <div className="flex items-center gap-2 mb-4">
+                  <span
+                    className="size-2 rounded-full animate-pulse"
+                    style={{ background: c.accentColor, boxShadow: `0 0 8px ${c.accentColor}` }}
+                  />
+                  <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                    Sample visualisation
+                  </p>
+                </div>
                 <div className="flex-1">{chartFor(c.chart)}</div>
-                <p className="text-xs text-muted-foreground mt-4 leading-relaxed">{c.chartCaption}</p>
+                <p className="text-xs text-muted-foreground mt-4 leading-relaxed border-t pt-3" style={{ borderColor: `${c.accentColor}15` }}>
+                  {c.chartCaption}
+                </p>
               </div>
             </div>
           </motion.article>
@@ -222,20 +301,25 @@ function ProjectsPage() {
 function CaseRow({
   icon: Icon,
   label,
+  accentColor,
   children,
 }: {
   icon: React.ElementType;
   label: string;
+  accentColor: string;
   children: React.ReactNode;
 }) {
   return (
     <div className="flex gap-4">
-      <div className="shrink-0 size-9 rounded-lg bg-primary/10 text-primary grid place-items-center">
-        <Icon className="size-4" />
+      <div
+        className="shrink-0 size-9 rounded-xl grid place-items-center"
+        style={{ background: `${accentColor}15`, border: `1px solid ${accentColor}25` }}
+      >
+        <Icon className="size-4" style={{ color: accentColor }} />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-[11px] uppercase tracking-widest text-muted-foreground mb-1">{label}</p>
-        <div className="text-foreground/90 leading-relaxed text-sm">{children}</div>
+        <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1">{label}</p>
+        <div className="text-foreground/85 leading-relaxed text-sm" style={{ fontFamily: "'Inter', sans-serif" }}>{children}</div>
       </div>
     </div>
   );

@@ -1,17 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { motion } from "framer-motion";
-import { Award, Download, GraduationCap, Trophy, Sparkles } from "lucide-react";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
+import {
+  Award, Download, GraduationCap, Trophy, Sparkles,
+  Code2, BarChart3, Database, Brain,
+} from "lucide-react";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
       { title: "About — Teddy Mathabatha" },
-      { name: "description", content: "Self-taught data analyst with a quantitative foundation in Applied Mathematics and Statistics, pursuing a career in data science." },
+      { name: "description", content: "Results-driven Data Analyst and aspiring Data Scientist from Johannesburg." },
     ],
   }),
   component: AboutPage,
 });
 
+/* ── Data ── */
 const certs = [
   { year: "2026", title: "Data Analysis Essentials",          issuer: "Cisco Networking Academy", color: "#22d3ee" },
   { year: "2026", title: "Introduction to AI & Data Science", issuer: "Absa ReadytoWork",         color: "#a78bfa" },
@@ -23,20 +28,105 @@ const achievements = [
   { year: "2024", title: "Self-taught the modern data stack",           body: "Worked through 200+ hours of structured study across SQL, Python (pandas), Power BI, and statistics.", color: "#34d399" },
 ];
 
-const competencies = [
-  { label: "Python (pandas, numpy)",             color: "#22d3ee" },
-  { label: "SQL: Joins, CTEs, Window Functions", color: "#a78bfa" },
-  { label: "Power BI · DAX · Power Query",       color: "#f472b6" },
-  { label: "Tableau",                            color: "#34d399" },
-  { label: "Excel Dashboards (Pivot · Slicers)", color: "#fbbf24" },
-  { label: "Statistics & Hypothesis Testing",    color: "#22d3ee" },
-  { label: "Machine Learning fundamentals",      color: "#a78bfa" },
-  { label: "Data Cleaning & ETL",                color: "#f472b6" },
-  { label: "Data Storytelling & Visualisation",  color: "#34d399" },
-  { label: "Production Documentation",           color: "#fbbf24" },
-  { label: "Stakeholder Communication",          color: "#22d3ee" },
-  { label: "Conceptual & Analytical Thinking",   color: "#a78bfa" },
+const skillCategories = [
+  {
+    icon: Code2,
+    label: "Languages & Libraries",
+    color: "#22d3ee",
+    skills: [
+      { name: "SQL (CTEs, Window Functions, Joins)", level: 90 },
+      { name: "Python — pandas, numpy",              level: 82 },
+      { name: "Python — scikit-learn (ML basics)",   level: 65 },
+      { name: "DAX (Power BI measures)",             level: 78 },
+    ],
+  },
+  {
+    icon: BarChart3,
+    label: "BI & Visualisation",
+    color: "#a78bfa",
+    skills: [
+      { name: "Power BI (dashboards, data modelling)", level: 88 },
+      { name: "Tableau",                               level: 75 },
+      { name: "Excel — Pivot Tables, Slicers, Charts", level: 92 },
+      { name: "Data Storytelling & Presentation",      level: 85 },
+    ],
+  },
+  {
+    icon: Database,
+    label: "Data Engineering",
+    color: "#34d399",
+    skills: [
+      { name: "Power Query (ETL & data shaping)", level: 83 },
+      { name: "Data Cleaning & Quality Profiling", level: 87 },
+      { name: "Star Schema & Data Modelling",      level: 78 },
+      { name: "Data Documentation & Cataloguing",  level: 80 },
+    ],
+  },
+  {
+    icon: Brain,
+    label: "Analytical & Soft Skills",
+    color: "#f472b6",
+    skills: [
+      { name: "Statistics & Hypothesis Testing",    level: 80 },
+      { name: "Analytical & Critical Thinking",     level: 90 },
+      { name: "Stakeholder Communication",          level: 88 },
+      { name: "Problem Solving & Root Cause Analysis", level: 85 },
+    ],
+  },
 ];
+
+/* ── Animated progress bar ── */
+function SkillBar({ name, level, color }: { name: string; level: number; color: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-40px" });
+
+  return (
+    <div ref={ref} className="space-y-1.5">
+      <div className="flex justify-between items-center">
+        <span className="text-sm" style={{ color: "#cbd5e1", fontFamily: "'Inter', sans-serif" }}>{name}</span>
+        <span
+          className="font-orbitron text-xs font-bold tabular-nums"
+          style={{ color }}
+        >
+          {inView ? `${level}%` : "0%"}
+        </span>
+      </div>
+      {/* Track */}
+      <div
+        className="relative h-2 rounded-full overflow-hidden"
+        style={{ background: "rgba(255,255,255,0.05)" }}
+      >
+        {/* Glow shadow layer */}
+        <motion.div
+          className="absolute inset-y-0 left-0 rounded-full blur-sm"
+          initial={{ width: 0 }}
+          animate={inView ? { width: `${level}%` } : { width: 0 }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+          style={{ background: color, opacity: 0.5 }}
+        />
+        {/* Solid fill layer */}
+        <motion.div
+          className="absolute inset-y-0 left-0 rounded-full"
+          initial={{ width: 0 }}
+          animate={inView ? { width: `${level}%` } : { width: 0 }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+          style={{
+            background: `linear-gradient(90deg, ${color}bb, ${color})`,
+            boxShadow: `0 0 12px ${color}60`,
+          }}
+        />
+        {/* Scanning shimmer */}
+        <motion.div
+          className="absolute inset-y-0 w-8 rounded-full"
+          initial={{ left: "-2rem", opacity: 0 }}
+          animate={inView ? { left: `${level}%`, opacity: [0, 0.8, 0] } : {}}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+          style={{ background: `linear-gradient(90deg, transparent, #fff, transparent)` }}
+        />
+      </div>
+    </div>
+  );
+}
 
 function AboutPage() {
   return (
@@ -81,22 +171,15 @@ function AboutPage() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-5xl px-6 lg:px-10 py-16 space-y-16">
+      <div className="mx-auto max-w-5xl px-6 lg:px-10 py-16 space-y-20">
 
         {/* Education + Certifications */}
         <div className="grid md:grid-cols-2 gap-5">
           <motion.div
-            initial={{ opacity: 1, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            initial={{ opacity: 1, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }} transition={{ duration: 0.5 }}
             className="p-8 rounded-2xl transition-all duration-300 hover:-translate-y-1"
-            style={{
-              background: "rgba(12,16,36,0.75)",
-              backdropFilter: "blur(20px)",
-              border: "1px solid rgba(34,211,238,0.12)",
-              boxShadow: "0 4px 32px rgba(0,0,0,0.3)",
-            }}
+            style={{ background: "rgba(12,16,36,0.75)", backdropFilter: "blur(20px)", border: "1px solid rgba(34,211,238,0.12)", boxShadow: "0 4px 32px rgba(0,0,0,0.3)" }}
           >
             <div className="size-12 rounded-xl grid place-items-center mb-5" style={{ background: "rgba(34,211,238,0.1)", border: "1px solid rgba(34,211,238,0.2)" }}>
               <GraduationCap className="size-6" style={{ color: "#22d3ee" }} />
@@ -110,17 +193,10 @@ function AboutPage() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 1, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.08 }}
+            initial={{ opacity: 1, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.08 }}
             className="p-8 rounded-2xl transition-all duration-300 hover:-translate-y-1"
-            style={{
-              background: "rgba(12,16,36,0.75)",
-              backdropFilter: "blur(20px)",
-              border: "1px solid rgba(167,139,250,0.12)",
-              boxShadow: "0 4px 32px rgba(0,0,0,0.3)",
-            }}
+            style={{ background: "rgba(12,16,36,0.75)", backdropFilter: "blur(20px)", border: "1px solid rgba(167,139,250,0.12)", boxShadow: "0 4px 32px rgba(0,0,0,0.3)" }}
           >
             <div className="size-12 rounded-xl grid place-items-center mb-5" style={{ background: "rgba(167,139,250,0.1)", border: "1px solid rgba(167,139,250,0.2)" }}>
               <Award className="size-6" style={{ color: "#a78bfa" }} />
@@ -129,10 +205,8 @@ function AboutPage() {
             <ul className="space-y-4">
               {certs.map((c) => (
                 <li key={c.title} className="flex gap-4 items-start">
-                  <span
-                    className="font-mono text-xs px-2 py-1 rounded-md shrink-0 mt-0.5"
-                    style={{ color: c.color, background: `${c.color}15`, border: `1px solid ${c.color}25` }}
-                  >
+                  <span className="font-mono text-xs px-2 py-1 rounded-md shrink-0 mt-0.5"
+                    style={{ color: c.color, background: `${c.color}15`, border: `1px solid ${c.color}25` }}>
                     {c.year}
                   </span>
                   <div>
@@ -143,6 +217,57 @@ function AboutPage() {
               ))}
             </ul>
           </motion.div>
+        </div>
+
+        {/* ── Skills & Tools ── */}
+        <div>
+          <div className="mb-10">
+            <p className="font-mono text-[10px] uppercase tracking-[0.25em] mb-2" style={{ color: "#22d3ee" }}>Proficiency</p>
+            <h2 className="font-montserrat font-bold text-2xl md:text-3xl" style={{ color: "#f1f5f9" }}>Skills & Tools</h2>
+            <p className="mt-2 text-sm" style={{ color: "#64748b", fontFamily: "'Inter', sans-serif" }}>
+              Self-assessed proficiency across the full data workflow — from raw ingestion to business-ready insight.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-5">
+            {skillCategories.map((cat, ci) => (
+              <motion.div
+                key={cat.label}
+                initial={{ opacity: 1, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.5, delay: ci * 0.08 }}
+                className="p-7 rounded-2xl space-y-5 transition-all duration-300 hover:-translate-y-1"
+                style={{
+                  background: "rgba(12,16,36,0.75)",
+                  backdropFilter: "blur(20px)",
+                  border: `1px solid ${cat.color}14`,
+                  boxShadow: "0 4px 32px rgba(0,0,0,0.3)",
+                }}
+              >
+                {/* Category header */}
+                <div className="flex items-center gap-3 mb-6">
+                  <div
+                    className="size-10 rounded-xl grid place-items-center shrink-0"
+                    style={{ background: `${cat.color}12`, border: `1px solid ${cat.color}25` }}
+                  >
+                    <cat.icon className="size-5" style={{ color: cat.color }} />
+                  </div>
+                  <div>
+                    <p className="font-mono text-[9px] uppercase tracking-widest" style={{ color: cat.color }}>Category</p>
+                    <h3 className="font-poppins font-semibold text-sm" style={{ color: "#f1f5f9" }}>{cat.label}</h3>
+                  </div>
+                </div>
+
+                {/* Skill bars */}
+                <div className="space-y-4">
+                  {cat.skills.map((sk) => (
+                    <SkillBar key={sk.name} name={sk.name} level={sk.level} color={cat.color} />
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
 
         {/* Achievements */}
@@ -165,11 +290,7 @@ function AboutPage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.07 }}
                 className="group grid md:grid-cols-12 gap-5 p-6 rounded-2xl transition-all duration-300 hover:-translate-y-0.5"
-                style={{
-                  background: "rgba(12,16,36,0.65)",
-                  backdropFilter: "blur(16px)",
-                  border: "1px solid rgba(255,255,255,0.05)",
-                }}
+                style={{ background: "rgba(12,16,36,0.65)", backdropFilter: "blur(16px)", border: "1px solid rgba(255,255,255,0.05)" }}
                 onMouseEnter={e => {
                   (e.currentTarget as HTMLElement).style.border = `1px solid ${a.color}25`;
                   (e.currentTarget as HTMLElement).style.boxShadow = `0 0 24px ${a.color}08`;
@@ -180,12 +301,7 @@ function AboutPage() {
                 }}
               >
                 <div className="md:col-span-2 flex md:flex-col items-center md:items-start gap-3">
-                  <span
-                    className="font-orbitron font-bold text-sm"
-                    style={{ color: a.color }}
-                  >
-                    {a.year}
-                  </span>
+                  <span className="font-orbitron font-bold text-sm" style={{ color: a.color }}>{a.year}</span>
                   <div className="size-1.5 rounded-full hidden md:block mt-1" style={{ background: a.color, boxShadow: `0 0 8px ${a.color}` }} />
                 </div>
                 <div className="md:col-span-10">
@@ -193,31 +309,6 @@ function AboutPage() {
                   <p className="text-sm leading-relaxed" style={{ color: "#64748b", fontFamily: "'Inter', sans-serif" }}>{a.body}</p>
                 </div>
               </motion.div>
-            ))}
-          </div>
-        </div>
-
-        {/* Competencies */}
-        <div>
-          <div className="mb-8">
-            <p className="font-mono text-[10px] uppercase tracking-[0.25em] mb-2" style={{ color: "#22d3ee" }}>Skills</p>
-            <h2 className="font-montserrat font-bold text-2xl" style={{ color: "#f1f5f9" }}>Core Competencies</h2>
-          </div>
-          <div className="flex flex-wrap gap-2.5">
-            {competencies.map((c) => (
-              <motion.span
-                key={c.label}
-                whileHover={{ scale: 1.05, y: -2 }}
-                className="px-4 py-2 rounded-full text-sm font-medium cursor-default transition-all duration-200"
-                style={{
-                  color: c.color,
-                  background: `${c.color}10`,
-                  border: `1px solid ${c.color}25`,
-                  fontFamily: "'Inter', sans-serif",
-                }}
-              >
-                {c.label}
-              </motion.span>
             ))}
           </div>
         </div>

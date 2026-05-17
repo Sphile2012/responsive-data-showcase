@@ -6,5 +6,6 @@
     "nodejs_compat"
   ],
   "main": "src/server.ts",
-  "pages_build_output_dir": "dist/client"
+  "pages_build_output_dir": "dist/client",
+  "_cache_bust": "2026-05-17"
 }

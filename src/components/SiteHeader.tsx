@@ -61,8 +61,14 @@ export function SiteHeader() {
                 className: "px-4 py-2 text-sm font-medium rounded-lg",
               }}
               activeOptions={{ exact: l.to === "/" }}
-              onMouseEnter={e => { if (!(e.currentTarget as HTMLElement).dataset.active) (e.currentTarget as HTMLElement).style.color = "#e2e8f0"; }}
-              onMouseLeave={e => { if (!(e.currentTarget as HTMLElement).dataset.active) (e.currentTarget as HTMLElement).style.color = "#94a3b8"; }}
+              onMouseEnter={(e) => {
+                if (!(e.currentTarget as HTMLElement).dataset.active)
+                  (e.currentTarget as HTMLElement).style.color = "#e2e8f0";
+              }}
+              onMouseLeave={(e) => {
+                if (!(e.currentTarget as HTMLElement).dataset.active)
+                  (e.currentTarget as HTMLElement).style.color = "#94a3b8";
+              }}
             >
               {l.label}
             </Link>
@@ -76,12 +82,12 @@ export function SiteHeader() {
               color: "#94a3b8",
               fontFamily: "'Inter', sans-serif",
             }}
-            onMouseEnter={e => {
+            onMouseEnter={(e) => {
               const el = e.currentTarget as HTMLElement;
               el.style.borderColor = "#22d3ee";
               el.style.color = "#22d3ee";
             }}
-            onMouseLeave={e => {
+            onMouseLeave={(e) => {
               const el = e.currentTarget as HTMLElement;
               el.style.borderColor = "rgba(34,211,238,0.2)";
               el.style.color = "#94a3b8";
@@ -131,7 +137,13 @@ export function SiteHeader() {
                 onClick={() => setOpen(false)}
                 className="px-4 py-3 rounded-lg text-sm font-medium transition-colors"
                 style={{ color: "#e2e8f0", fontFamily: "'Inter', sans-serif" }}
-                activeProps={{ style: { color: "#22d3ee", background: "rgba(34,211,238,0.08)", fontFamily: "'Inter', sans-serif" } }}
+                activeProps={{
+                  style: {
+                    color: "#22d3ee",
+                    background: "rgba(34,211,238,0.08)",
+                    fontFamily: "'Inter', sans-serif",
+                  },
+                }}
                 activeOptions={{ exact: l.to === "/" }}
               >
                 {l.label}

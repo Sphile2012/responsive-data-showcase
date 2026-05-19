@@ -215,18 +215,21 @@ function AboutPage() {
                 className="text-base lg:text-lg leading-relaxed"
                 style={{ color: "#94a3b8", fontFamily: "'Inter', sans-serif" }}
               >
-                I'm a results-driven Data Analyst and aspiring Data Scientist from Johannesburg with
-                a strong passion for transforming raw data into powerful business insights. I
-                specialize in combining statistics, SQL, Python, and modern BI tools to build
-                intelligent dashboards, predictive models, and data-driven solutions that help
-                organizations make smarter, faster decisions.
+                I'm a results-driven Data Analyst and aspiring Data Scientist from Johannesburg
+                pursuing a BSc in Applied Mathematics & Statistics. I specialize in combining
+                statistics, SQL, Python, and modern BI tools to build intelligent dashboards,
+                predictive models, and data-driven solutions that help organizations make smarter,
+                faster decisions.
               </p>
               <p
                 className="text-base leading-relaxed"
                 style={{ color: "#64748b", fontFamily: "'Inter', sans-serif" }}
               >
-                My goal is to bring technical excellence, creativity, and measurable value to
-                forward-thinking companies looking to unlock the full power of their data.
+                I'm actively seeking data analyst and data science roles where I can apply my
+                mathematical foundation, analytical skills, and passion for turning data into
+                actionable insights. My objective is to join a forward-thinking organization where I
+                can contribute to data-driven decision-making, build scalable analytics solutions,
+                and drive measurable business impact while continuing to grow as a data professional.
               </p>
               <a
                 href="/teddy-mathabatha-cv.pdf"

@@ -234,11 +234,11 @@ const experience = [
     ],
   },
   {
-    role: "BSc Information Systems (in progress)",
+    role: "BSc Applied Mathematics & Statistics (in progress)",
     org: "University of South Africa (UNISA)",
     period: "2022 — Present",
     bullets: [
-      "Coursework in statistics, databases, programming, and information modelling.",
+      "Coursework in statistical analysis, mathematical modelling, quantitative methods, and probability theory.",
       "Self-directed study in machine learning, SQL window functions, and BI engineering.",
     ],
   },
@@ -335,10 +335,12 @@ function Index() {
               <span className="font-semibold" style={{ color: "#e2e8f0" }}>
                 Teddy Mathabatha
               </span>{" "}
-              — a results-driven Data Analyst and aspiring Data Scientist from Johannesburg. I
-              combine statistics, SQL, Python, and modern BI tools to build intelligent dashboards,
-              predictive models, and data-driven solutions that help organizations make smarter,
-              faster decisions.
+              — a results-driven Data Analyst and aspiring Data Scientist from Johannesburg pursuing a
+              BSc in Applied Mathematics & Statistics. I combine statistics, SQL, Python, and modern BI
+              tools to build intelligent dashboards, predictive models, and data-driven solutions that
+              help organizations make smarter, faster decisions. I'm seeking opportunities to apply
+              my analytical skills and mathematical foundation to solve complex business challenges
+              and drive measurable impact.
             </motion.p>
 
             {/* CTAs */}
